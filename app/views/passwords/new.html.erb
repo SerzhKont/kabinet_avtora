@@ -1,4 +1,7 @@
-<h1>Forgot your password?</h1>
+
+<div class="columns is-centered">
+  <div class="column is-half form-container">
+    <h1 class="title has-text-centered">Забули пароль?</h1>
 
 <%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
 
@@ -6,3 +9,5 @@
   <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %><br>
   <%= form.submit "Email reset instructions" %>
 <% end %>
+</div>
+</div>
