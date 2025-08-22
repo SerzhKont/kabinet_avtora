@@ -1,0 +1,6 @@
+<% password_digest = BCrypt::Password.create("password") %>
+
+admin:
+  email_address: admin@expertus.media
+  password_digest: <%= BCrypt::Password.create('admin') %>
+  role: admin

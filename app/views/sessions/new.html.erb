@@ -1,0 +1,45 @@
+<section class="section">
+  <div class="container">
+    <h1 class="title has-text-centered">Вход в Кабинет Автора</h1>
+
+    <% if flash[:alert] %>
+      <div class="notification is-danger has-text-centered"><%= flash[:alert] %></div>
+    <% end %>
+
+    <div class="columns is-centered">
+      <div class="column is-half form-container">
+        <%= form_with url: session_path, method: :post, data: { turbo: false } do |form| %>
+          <div class="field">
+            <%= form.label :email_address, "Электронная почта", class: "label" %>
+            <div class="control has-icons-left">
+              <%= form.email_field :email_address, class: "input is-medium", required: true, autofocus: true, autocomplete: "username", placeholder: "Введите ваш email", value: params[:email_address] %>
+              <span class="icon is-left">
+                <i class="fas fa-envelope"></i>
+              </span>
+            </div>
+          </div>
+
+          <div class="field">
+            <%= form.label :password, "Пароль", class: "label" %>
+            <div class="control has-icons-left">
+              <%= form.password_field :password, class: "input is-medium", required: true, autocomplete: "current-password", placeholder: "Введите ваш пароль", maxlength: 72 %>
+              <span class="icon is-left">
+                <i class="fas fa-lock"></i>
+              </span>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="control has-text-centered">
+              <%= form.submit "Войти", class: "button is-primary is-medium is-fullwidth" %>
+            </div>
+          </div>
+
+          <div class="has-text-centered">
+            <%= link_to "Забыли пароль?", new_password_path, class: "is-size-6 has-text-grey" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

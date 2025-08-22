@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  description: MyText
+  status: MyString
+  client: one
+  uploaded_by: one
+  signed_at: 2025-08-22 18:36:56
+
+two:
+  title: MyString
+  description: MyText
+  status: MyString
+  client: two
+  uploaded_by: two
+  signed_at: 2025-08-22 18:36:56

@@ -1,0 +1,14 @@
+<h1>Documents</h1>
+
+<% if current_user&.manager? %>
+  <%= link_to "New document", new_document_path %>
+<% end %>
+
+<div id="documents">
+  <% @documents.each do |document| %>
+    <div>
+      <%= link_to document.title, document %>
+      <p>Status: <%= document.status %></p>
+    </div>
+  <% end %>
+</div>
