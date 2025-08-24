@@ -36,23 +36,21 @@
                 <i class="fas fa-user mr-1"></i>
                 <%= @current_user.name %>
               </span>
-            <%= button_to "Вийти", session_path, method: :delete, class: "navbar-item button is-black is-light"%>
+            <div class="navbar-item">
+              <%= button_to "Вийти", session_path, method: :delete, class: "navbar-item button is-primary" %>
+            </div>
           <% end %>
         </div>
       </div>
     </header>
 
     <main class="section has-background-white-bis is-flex is-justify-content-center is-align-content-flex-start" style="min-height: 100vh;" >
-      <% if flash[:alert] %>
-        <div class="notification is-danger mb-4"><%= flash[:alert] %></div>
-      <% end %>
-      <% if flash[:notice] %>
-        <div class="notification is-success mb-4"><%= flash[:notice] %></div>
-      <% end %>
-      <%= yield %>
+      <div class="container">
+        <%= yield %>
+      </div>
     </main>
 
-    <footer class="footer has-background-white">
+    <footer class="footer has-background-link">
       <div class="content has-text-centered">
         <p>© 2025 My App</p>
       </div>

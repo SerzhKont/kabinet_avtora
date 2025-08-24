@@ -1,6 +1,24 @@
 <div class="container">
   <div class="columns is-centered">
-    <div class="column is-one-third">
+    <div class="column">
+    </div>
+    <div class="column is-two-fifths">
+
+      <turbo-frame id="notifications">
+        <% if flash[:alert] %>
+          <div class="notification is-danger mb-4">
+            <%= button_to '', dismiss_notification_path, method: :post, params: { type: 'alert' }, class: 'delete is-pulled-right', data: { turbo_frame: 'notifications' } %>
+            <%= flash[:alert] %>
+          </div>
+        <% end %>
+        <% if flash[:notice] %>
+          <div class="notification is-success mb-4">
+            <%= button_to '', dismiss_notification_path, method: :post, params: { type: 'notice' }, class: 'delete is-pulled-right', data: { turbo_frame: 'notifications' } %>
+            <%= flash[:notice] %>
+          </div>
+        <% end %>
+      </turbo-frame>
+
       <div class="box has-background-white">
         <h1 class="title has-text-centered">Вхід</h1>
         <%= form_with url: session_path do |form| %>
@@ -35,6 +53,9 @@
           </div>
         <% end %>
       </div>
+
+    </div>
+    <div class="column">
     </div>
   </div>
 </div>

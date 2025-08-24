@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   resources :documents
   root "documents#index"
   resources :passwords, param: :token
+
+  post "dismiss_notification", to: "application#dismiss_notification", as: :dismiss_notification
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

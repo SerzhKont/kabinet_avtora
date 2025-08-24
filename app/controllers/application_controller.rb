@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Authentication
+  skip_before_action :require_authentication, only: [ :dismiss_notification ]
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
@@ -21,5 +22,12 @@ class ApplicationController < ActionController::Base
 
   def after_authentication_url
     root_path
+  end
+
+  def dismiss_notification
+    flash.delete(params[:type].to_sym)
+    respond_to do |format|
+      format.html { render partial: "layouts/notifications", locals: { flash: flash } }
+    end
   end
 end

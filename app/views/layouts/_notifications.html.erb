@@ -1,0 +1,14 @@
+<turbo-frame id="notifications">
+  <% if flash[:alert] %>
+    <div class="notification is-danger mb-4">
+      <%= flash[:alert] %>
+      <%= button_to '×', dismiss_notification_path, method: :post, params: { type: 'alert' }, class: 'delete', data: { turbo_frame: 'notifications' } %>
+    </div>
+  <% end %>
+  <% if flash[:notice] %>
+    <div class="notification is-success mb-4">
+      <%= flash[:notice] %>
+      <%= button_to '×', dismiss_notification_path, method: :post, params: { type: 'notice' }, class: 'delete', data: { turbo_frame: 'notifications' } %>
+    </div>
+  <% end %>
+</turbo-frame>
