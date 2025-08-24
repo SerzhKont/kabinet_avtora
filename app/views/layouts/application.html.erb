@@ -13,8 +13,6 @@
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -24,34 +22,40 @@
   </head>
 
   <body>
-    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+    <header class="navbar is-white has-shadow" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <%= link_to root_path, class: "navbar-item is-size-4 has-text-weight-bold has-text-dark" do %> 
-          <%= image_tag "faviconnew.ico", alt: "Кабінет Автора Logo", style: "max-width: 60px; height: auto;" %>
+          <%= image_tag "faviconnew.ico", alt: "Кабінет Автора Logo", style: "max-width: 40px; height: auto;" %>
           <span>Кабінет Автора</span>
         <% end %>
       </div>
       <div class="navbar-menu">
         <div class="navbar-end">
           <% if authenticated? %>
-            <%= button_to session_path, method: :delete, class: "navbar-item button is-light has-text-dark" do %>
-              <i class="fas fa-sign-out-alt mr-1"></i> 
-            <span>Вийти</span>
-            <% end %>
+              <span class="navbar-item has-text-weight-medium">
+                <i class="fas fa-user mr-1"></i>
+                <%= @current_user.name %>
+              </span>
+            <%= button_to "Вийти", session_path, method: :delete, class: "navbar-item button is-black is-light"%>
           <% end %>
         </div>
       </div>
-    </nav>
-    <section class="section">
+    </header>
+
+    <main class="section has-background-white-bis is-flex is-justify-content-center is-align-content-flex-start" style="min-height: 100vh;" >
       <% if flash[:alert] %>
-        <div class="notification is-danger"><%= flash[:alert] %></div>
+        <div class="notification is-danger mb-4"><%= flash[:alert] %></div>
       <% end %>
       <% if flash[:notice] %>
-        <div class="notification is-success"><%= flash[:notice] %></div>
+        <div class="notification is-success mb-4"><%= flash[:notice] %></div>
       <% end %>
-      <div class="container">
-        <%= yield %>
+      <%= yield %>
+    </main>
+
+    <footer class="footer has-background-white">
+      <div class="content has-text-centered">
+        <p>© 2025 My App</p>
       </div>
-    </section>
+    </footer>
   </body>
 </html>
