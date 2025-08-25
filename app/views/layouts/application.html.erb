@@ -15,10 +15,11 @@
 
     <link rel="apple-touch-icon" href="/icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    <%= favicon_link_tag 'faviconnew.ico' %>
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <%= javascript_include_tag 'application' %>
   </head>
 
   <body>
@@ -28,8 +29,14 @@
           <%= image_tag "faviconnew.ico", alt: "Кабінет Автора Logo", style: "max-width: 40px; height: auto;" %>
           <span>Кабінет Автора</span>
         <% end %>
+        <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
       </div>
-      <div class="navbar-menu">
+      <div class="navbar-menu" id="navbarMenu">
         <div class="navbar-end">
           <% if authenticated? %>
               <span class="navbar-item has-text-weight-medium">
@@ -44,7 +51,7 @@
       </div>
     </header>
 
-    <main class="section has-background-white-bis is-flex is-justify-content-center is-align-content-flex-start" style="min-height: 100vh;" >
+    <main class="section  is-flex is-align-items-flex-start" style="min-height: 100vh;" >
       <div class="container">
         <%= yield %>
       </div>
