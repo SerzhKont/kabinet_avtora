@@ -1,5 +1,8 @@
 <h1>New document</h1>
 
+  <div class="column is-2">
+    <%= render "layouts/sidebar" %>
+  </div>
 <%= form_with model: @document do |form| %>
   <div>
     <%= form.label :title %>

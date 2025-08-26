@@ -1,3 +1,30 @@
 .navbar.has-shadow {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
+
+.dropdown {
+  display: none;
+}
+
+.menu {
+  display: block;
+}
+
+.has-shadow-strong {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
+}
+
+@media screen and (max-width: 768px) {
+  .menu {
+    display: none;
+  }
+.dropdown {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+  .dropdown-menu {
+    width: 100%;
+  }
+}

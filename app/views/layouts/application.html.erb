@@ -23,13 +23,13 @@
   </head>
 
   <body>
-    <header class="navbar is-white has-shadow" role="navigation" aria-label="main navigation">
+    <header class="navbar is-light is-fixed-top has-shadow" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <%= link_to root_path, class: "navbar-item is-size-4 has-text-weight-bold has-text-dark" do %> 
           <%= image_tag "faviconnew.ico", alt: "Кабінет Автора Logo", style: "max-width: 40px; height: auto;" %>
           <span>Кабінет Автора</span>
         <% end %>
-        <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+        <a class="navbar-burger has-text-dark" role="button" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
@@ -40,25 +40,29 @@
         <div class="navbar-end">
           <% if authenticated? %>
               <span class="navbar-item has-text-weight-medium">
-                <i class="fas fa-user mr-1"></i>
                 <%= @current_user.name %>
               </span>
             <div class="navbar-item">
-              <%= button_to "Вийти", session_path, method: :delete, class: "navbar-item button is-primary" %>
+              <%= button_to session_path, method: :delete, class: "navbar-item button is-primary" do %>
+                <span class="icon-text">
+                  <i class="fas fa-sign-out-alt"></i>
+                </span>
+                <span>Вийти</span>
+              <% end %>
             </div>
           <% end %>
         </div>
       </div>
     </header>
 
-    <main class="section  is-flex is-align-items-flex-start" style="min-height: 100vh;" >
-      <div class="container">
+    <main class="section is-flex is-align-items-flex-start " style="min-height: 100vh;" >
+      <div class="container pt-6">
         <%= yield %>
       </div>
     </main>
 
     <footer class="footer has-background-link">
-      <div class="content has-text-centered">
+      <div class="content has-text-centered has-text-white">
         <p>© 2025 My App</p>
       </div>
     </footer>

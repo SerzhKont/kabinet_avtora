@@ -145,6 +145,10 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: dbm
+  version: '0'
+  source:
+    type: stdlib
 - name: delegate
   version: '0'
   source:
@@ -165,6 +169,10 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: ffi
+  version: 1.17.2
+  source:
+    type: rubygems
 - name: fileutils
   version: '0'
   source:
@@ -223,6 +231,14 @@ gems:
     type: git
     name: ruby/gem_rbs_collection
     revision: 815e8f97e0be3127ccdb09c4bfe3908797f937d6
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: mini_magick
+  version: '5.0'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 14112a82013860a7d2e5246b4c4f36fbb8c349dc
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: mini_mime
@@ -313,6 +329,14 @@ gems:
   version: 1.4.0
   source:
     type: rubygems
+- name: pstore
+  version: '0'
+  source:
+    type: stdlib
+- name: psych
+  version: '0'
+  source:
+    type: stdlib
 - name: rack
   version: '2.2'
   source:
@@ -446,6 +470,10 @@ gems:
   source:
     type: stdlib
 - name: timeout
+  version: '0'
+  source:
+    type: stdlib
+- name: tmpdir
   version: '0'
   source:
     type: stdlib

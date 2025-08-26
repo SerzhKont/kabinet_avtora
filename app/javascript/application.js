@@ -25,3 +25,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Получаем все элементы с классом dropdown
+    const dropdowns = document.querySelectorAll('.dropdown');
+
+    dropdowns.forEach(dropdown => {
+      dropdown.addEventListener('click', function(event) {
+        event.stopPropagation();
+        this.classList.toggle('is-active');
+      });
+    });
+
+    // Закрываем дропдаун при клике вне его
+    document.addEventListener('click', () => {
+      dropdowns.forEach(dropdown => {
+        dropdown.classList.remove('is-active');
+      });
+    });
+  });
