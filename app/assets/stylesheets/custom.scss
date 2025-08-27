@@ -10,20 +10,63 @@
   display: block;
 }
 
+/* Обычные ссылки */
+.menu-list a {
+  color: #4a4a4a;
+  /* базовый цвет текста */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.menu-list a:hover {
+  background-color: #f5f5f5;
+  /* лёгкая подсветка */
+  color: #000;
+  /* текст чуть темнее */
+}
+
+/* Активная ссылка */
+.menu-list a.is-active {
+  background-color: #f0f0f0;
+  /* светло-серый фон */
+  color: #363636;
+  /* тёмно-серый текст */
+}
+
+.menu-list a.is-active:hover {
+  background-color: #e0e0e0;
+  /* чуть темнее при наведении */
+  color: #000;
+  /* текст становится контрастнее */
+}
+
 .has-shadow-strong {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border: 1px solid #e0e0e0;
+}
+
+.has-border-bottom {
+  border-style: hidden hidden solid hidden;
+  border-width: 1px;
+  border-color: hsl(0, 0%, 86%)
+}
+
+.has-border-right {
+  border-style: hidden solid hidden hidden;
+  border-width: 1px;
+  border-color: hsl(0, 0%, 86%)
 }
 
 @media screen and (max-width: 768px) {
   .menu {
     display: none;
   }
-.dropdown {
+
+  .dropdown {
     display: block;
     width: 100%;
     text-align: center;
   }
+
   .dropdown-menu {
     width: 100%;
   }

@@ -1,0 +1,139 @@
+@use "sass:map";
+@use "bulma";
+
+// Определение тем
+$themes: (
+  light: (text: #363636,
+    background: #ffffff,
+    primary: #0c72bb,
+    secondary: #85bc24,
+    accent: #e40c5b),
+  dark: (text: #c9c9c9,
+    background: #000000,
+    primary: #44aaf3,
+    secondary: #a3db43,
+    accent: #f31b6a)
+);
+
+// Функция для получения цвета из темы
+@function theme-get($key, $theme) {
+  @return map.get(map.get($themes, $theme), $key);
+}
+
+// Определение переменных Bulma
+$family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+
+// Переменные для светлой темы по умолчанию
+$primary: theme-get(primary, light);
+$link: theme-get(secondary, light);
+$success: theme-get(accent, light);
+$text: theme-get(text, light);
+$background: theme-get(background, light);
+
+// Базовые CSS-переменные для темы по умолчанию (light)
+:root {
+  --bulma-text: #{theme-get(text, light)};
+  --bulma-background: #{theme-get(background, light)};
+  --bulma-primary: #{theme-get(primary, light)};
+  --bulma-link: #{theme-get(secondary, light)};
+  --bulma-success: #{theme-get(accent, light)};
+}
+
+// Стили для светлой темы
+:root[data-theme="light"] {
+  --bulma-text: #{theme-get(text, light)};
+  --bulma-background: #{theme-get(background, light)};
+  --bulma-primary: #{theme-get(primary, light)};
+  --bulma-link: #{theme-get(secondary, light)};
+  --bulma-success: #{theme-get(accent, light)};
+}
+
+// Стили для тёмной темы
+:root[data-theme="dark"] {
+  --bulma-text: #{theme-get(text, dark)};
+  --bulma-background: #{theme-get(background, dark)};
+  --bulma-primary: #{theme-get(primary, dark)};
+  --bulma-link: #{theme-get(secondary, dark)};
+  --bulma-success: #{theme-get(accent, dark)};
+}
+
+// Применение переменных к элементам Bulma
+body {
+  background-color: var(--bulma-background);
+  color: var(--bulma-text);
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.button.is-primary {
+  background-color: var(--bulma-primary);
+  color: #fff;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.button.is-link {
+  background-color: var(--bulma-link);
+  color: #fff;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.notification.is-success {
+  background-color: var(--bulma-success);
+  color: #fff;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.content {
+  color: var(--bulma-text);
+  transition: color 0.2s ease-in-out;
+}
+
+// Стили для переключателя
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bulma-text);
+  transition: background-color 0.2s ease-in-out;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: var(--bulma-background);
+  transition: transform 0.2s ease-in-out;
+  border-radius: 50%;
+}
+
+input:checked+.slider {
+  background-color: var(--bulma-primary);
+}
+
+input:checked+.slider:before {
+  transform: translateX(26px);
+}
+
+// Отключение анимаций во время загрузки
+.preload * {
+  transition: none !important;
+}

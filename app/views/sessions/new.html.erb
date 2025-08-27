@@ -16,14 +16,14 @@
       <% end %>
     </turbo-frame>
 
-    <div class="box has-shadow-strong">
+    <div class="box has-background-light has-shadow-strong">
       <h1 class="title has-text-centered has-text-dark">Вхід в кабінет</h1>
       <%= form_with url: session_path do |form| %>
         <div class="field mb-5">
           <%= form.label :email_address, "Пошта", class: "label" %>
           <div class="control has-icons-left">
-            <%= form.email_field :email_address, class: "input is-medium is-primary", required: true, autofocus: true, autocomplete: "username", placeholder: "Введіть ваш email", value: params[:email_address] %>
-              <span class="icon is-left has-text-primary">
+            <%= form.email_field :email_address, class: "input is-medium", required: true, autofocus: true, autocomplete: "username", placeholder: "Введіть ваш email", value: params[:email_address] %>
+              <span class="icon is-left">
                 <i class="fas fa-envelope is"></i>
               </span>
           </div>
@@ -32,8 +32,8 @@
         <div class="field">
           <%= form.label :password, "Пароль", class: "label" %>
           <div class="control has-icons-left">
-            <%= form.password_field :password, class: "input is-medium is-primary", required: true, autocomplete: "current-password", placeholder: "Введіть ваш пароль", maxlength: 72 %>
-              <span class="icon is-left has-text-primary">
+            <%= form.password_field :password, class: "input is-medium", required: true, autocomplete: "current-password", placeholder: "Введіть ваш пароль", maxlength: 72 %>
+              <span class="icon is-left">
                 <i class="fas fa-lock"></i>
               </span>
           </div>
@@ -41,7 +41,7 @@
 
         <div class="field">
           <div class="control has-text-centered">
-            <%= form.submit "Увійти", class: "button is-primary is-medium is-fullwidth" %>
+            <%= form.submit "Увійти", class: "button is-link is-medium is-fullwidth" %>
           </div>
         </div>
 

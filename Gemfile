@@ -1,9 +1,5 @@
 source "https://rubygems.org"
 
-gem "bulma-rails", "~> 1.0.0"
-gem "amazing_print"
-gem "solargraph"
-gem "solargraph-rails"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2", ">= 8.0.2.1"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
@@ -67,3 +63,7 @@ group :test do
 end
 
 gem "dartsass-rails", "~> 0.5.1"
+gem "bulma-rails", "~> 1.0.0"
+gem "amazing_print"
+gem 'solargraph', group: :development
+gem "solargraph-rails"
