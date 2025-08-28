@@ -169,6 +169,10 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: erb-formatter
+  version: 0.7.3
+  source:
+    type: rubygems
 - name: ffi
   version: 1.17.2
   source:
@@ -399,6 +403,14 @@ gems:
     type: git
     name: ruby/gem_rbs_collection
     revision: 815e8f97e0be3127ccdb09c4bfe3908797f937d6
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: request_store
+  version: '1.5'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 14112a82013860a7d2e5246b4c4f36fbb8c349dc
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: ripper

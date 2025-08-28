@@ -1,17 +1,12 @@
 class DocumentsController < ApplicationController
-  before_action :authenticate_user!, except: [ :show ]
-  before_action :set_document, only: [ :show ]
-  before_action :authorize_access, only: [ :show ]
+  before_action :authenticate_user!
+  before_action :set_document, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    if current_user&.admin?
-      @documents = Document.all
-    elsif current_user&.manager?
-      @documents = Document.where(uploaded_by_id: current_user.id)
-    elsif current_user&.client?
-      @documents = Document.where(client_id: current_user.id)
+    if params[:status].present?
+      @documents = Document.where(status: params[:status]).order(created_at: :desc)
     else
-      @documents = Document.none
+      @documents = Document.all.order(created_at: :desc)
     end
   end
 
@@ -23,15 +18,33 @@ class DocumentsController < ApplicationController
   end
 
   def create
-    @document = Document.new(document_params)
-    @document.uploaded_by = current_user
-    @document.client = User.find_by(client_code: params[:document][:client_code])
-
-    if @document.save
-      redirect_to @document, notice: "Document created."
+    if params[:document][:files].present?
+      params[:document][:files].each do |uploaded_file|
+        Document.create(
+          file: uploaded_file,
+          uploaded_by: current_user
+        )
+      end
+      redirect_to documents_path, notice: "Документи завантажені."
     else
-      render :new, status: :unprocessable_entity
+      redirect_to new_document_path, alert: "Оберіть хоча б один файл."
     end
+  end
+
+  def edit
+  end
+
+  def update
+    if @document.update(document_params)
+      redirect_to @document, notice: "Документ обновлён."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @document.destroy
+    redirect_to documents_url, notice: "Документ удалён."
   end
 
   private
@@ -40,13 +53,7 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
   end
 
-  def authorize_access
-    unless current_user&.admin? || @document.client_id == current_user&.id || @document.uploaded_by_id == current_user&.id
-      redirect_to root_path, alert: "Access denied."
-    end
-  end
-
   def document_params
-    params.expect(document: [ :title, :file, :client_code ])
+    params.require(:document).permit(:title, :description, :status, :signed_at, :file)
   end
 end

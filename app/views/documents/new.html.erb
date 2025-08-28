@@ -1,28 +1,12 @@
-<h1>New document</h1>
+<h1>Загрузка документов</h1>
 
-  <div class="column is-2">
-    <%= render "layouts/sidebar" %>
-  </div>
-<%= form_with model: @document do |form| %>
+<%= form_with model: @document, local: true, multipart: true do |f| %>
   <div>
-    <%= form.label :title %>
-    <%= form.text_field :title %>
+    <%= f.label :files, "Виберіть документи" %><br>
+    <%= f.file_field :files, multiple: true %>
   </div>
+
   <div>
-    <%= form.label :description %>
-    <%= form.text_area :description %>
-  </div>
-  <div>
-    <%= form.label :client_code, "Client Code" %>
-    <%= form.text_field :client_code %>
-  </div>
-  <div>
-    <%= form.label :file %>
-    <%= form.file_field :file %>
-  </div>
-  <div>
-    <%= form.submit %>
+    <%= f.submit "Додати" %>
   </div>
 <% end %>
-
-<%= link_to "Cancel", documents_path %>

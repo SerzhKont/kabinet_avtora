@@ -65,5 +65,7 @@ end
 gem "dartsass-rails", "~> 0.5.1"
 gem "bulma-rails", "~> 1.0.0"
 gem "amazing_print"
-gem 'solargraph', group: :development
+gem "solargraph", group: :development
 gem "solargraph-rails"
+gem "erb-formatter", group: :development
+gem "paper_trail"
