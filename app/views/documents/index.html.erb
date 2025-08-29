@@ -11,7 +11,7 @@
         <button class="button is-primary">Найти</button>
       </div>
       <div class="control">
-        <%= link_to "Загрузить документы", new_document_path, class: "button is-primary" %>
+        <%= link_to "Завантажити документи", new_document_path, class: "button is-primary" %>
       </div>
     </div>
     <div class="mb-4">
@@ -19,17 +19,17 @@
       <%= link_to "З клієнтом", documents_path(status: 'linked'), class: "button is-small #{'is-link' if params[:status] == 'linked'}" %>
       <%= link_to "Без клієнта", documents_path(status: 'unlinked'), class: "button is-small #{'is-link' if params[:status] == 'unlinked'}" %>
     </div>
-    <table class="table is-fullwidth is-striped is-hoverable">
+    <table class="table is-fullwidth is-hoverable">
       <thead>
         <tr>
-          <th class="has-text-grey">Назва</th>
-          <th class="has-text-grey">Опис</th>
-          <th class="has-text-grey">Статус</th>
-          <th class="has-text-grey">Клієнт</th>
-          <th class="has-text-grey">Завантажив</th>
-          <th class="has-text-grey">Додано</th>
-          <th class="has-text-grey">Підписано</th>
-          <th class="has-text-grey">Дії</th>
+          <th>Назва</th>
+          <th>Опис</th>
+          <th>Статус</th>
+          <th>Клієнт</th>
+          <th>Завантажив</th>
+          <th>Додано</th>
+          <th>Підписано</th>
+          <th>Дії</th>
         </tr>
       </thead>
       <tbody>
@@ -37,19 +37,42 @@
           <tr class="<%= 'has-background-warning-light' if doc.status == 'unlinked' %>">
             <td><%= doc.title.presence || (doc.file.attached? ? doc.file.filename : '-') %></td>
             <td><%= doc.description.presence || '-' %></td>
-            <td><%= doc.status %></td>
+            <td><%= doc.status_label %></td>
             <td><%= doc.client&.name || '❌ Не знайдено' %></td>
             <td><%= doc.uploaded_by&.name || '-' %></td>
             <td><%= doc.created_at.strftime("%Y-%m-%d %H:%M") %></td>
             <td><%= doc.signed_at&.strftime("%Y-%m-%d %H:%M") || '-' %></td>
             <td>
-              <%= link_to "Відкрити", document_path(doc), class: "button is-small is-info" %>
               <% if doc.file.attached? %>
-                <%= link_to "Завантажити", rails_blob_path(doc.file, disposition: "attachment"), class: "button is-small is-secondary" %>
+                <%= link_to "Завантажити", rails_blob_path(doc.file, disposition: "attachment"), class: "button is-small is-ghost" %>
               <% end %>
-              <%= link_to "Редагувати", edit_document_path(doc), class: "button is-small is-warning" %>
+              <%= link_to "Редагувати", edit_document_path(doc), class: "button is-small is-ghost" %>
+              <a class="button is-small is-ghost" onclick="document.getElementById('delete-modal-<%= doc.id %>').classList.add('is-active')">
+                Видалити
+              </a>
+              <div id="delete-modal-<%= doc.id %>" class="modal">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                  <header class="modal-card-head">
+                    <p class="modal-card-title">Підтвердіть видалення файла</p>
+                    <button class="delete" aria-label="close" onclick="this.closest('.modal').classList.remove('is-active')"></button>
+                  </header>
+                  <section class="modal-card-body">
+                    Ви впевнені, що хочете видалити документ <strong><%= doc.title %></strong>?
+                  </section>
+                  <footer class="modal-card-foot">
+                    <div class="buttons">
+                      <%= button_to "Так, видалити",
+                                    document_path(doc),
+                                    method: :delete,
+                                    class: "button is-danger" %>
+                      <button class="button" onclick="this.closest('.modal').classList.remove('is-active')">Скасувати</button>
+                    </div>
+                  </footer>
+                </div>
+              </div>
               <% if doc.status == "linked" %>
-                <%= link_to "Відправити на підпис", send_to_client_document_path(doc), method: :patch, data: { confirm: "Відправити на підпис?" }, class: "button is-small is-primary" %>
+                <%= link_to "Відправити на підпис", send_to_client_document_path(doc), method: :patch, data: { confirm: "Відправити на підпис?" }, class: "button is-small is-ghost" %>
               <% end %>
             </td>
           </tr>

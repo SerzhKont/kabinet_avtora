@@ -44,7 +44,7 @@ class DocumentsController < ApplicationController
 
   def destroy
     @document.destroy
-    redirect_to documents_url, notice: "Документ удалён."
+    redirect_to documents_path, notice: "Документ удалён."
   end
 
   private

@@ -5,7 +5,17 @@ class Document < ApplicationRecord
 
   has_one_attached :file
 
-  enum :status, { just_uploaded: "Новий", pending: "На підписанні", signed: "Підписано"  }, default: :just_uploaded
+  enum :status, { just_uploaded: "just_uploaded", pending: "pending", signed: "signed" }, default: "just_uploaded"
+
+  STATUS_LABELS = {
+    "just_uploaded" => "Новий",
+    "pending"       => "На підписанні",
+    "signed"        => "Підписано"
+  }.freeze
+
+  def status_label
+    STATUS_LABELS[status]
+  end
 
   validates :title, presence: true
   validates :file, presence: true
@@ -28,10 +38,8 @@ class Document < ApplicationRecord
   def extract_metadata
     filename = file.filename.to_s
 
-    # Название документа = имя файла без расширения
-    self.title = File.basename(filename, ".*") if title.blank?
+    self.title = File.basename(filename) if title.blank?
 
-    # Код клиента = первые 8 символов
     client_code = filename[0, 8]
     user = User.find_by(client_code: client_code, role: "client")
 

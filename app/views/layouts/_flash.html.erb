@@ -1,0 +1,11 @@
+<% flash.each do |key, message| %>
+  <% type_class = case key.to_sym
+       when :notice then "is-success"
+       when :alert  then "is-danger"
+       else "is-info"
+     end %>
+  <div class="notification <%= type_class %>">
+    <button class="delete" onclick="this.parentElement.remove()"></button>
+    <%= message %>
+  </div>
+<% end %>

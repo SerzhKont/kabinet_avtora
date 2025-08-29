@@ -10,21 +10,6 @@
   display: block;
 }
 
-/* Обычные ссылки */
-.menu-list a {
-  color: #4a4a4a;
-  /* базовый цвет текста */
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.menu-list a:hover {
-  background-color: #f5f5f5;
-  /* лёгкая подсветка */
-  color: #000;
-  /* текст чуть темнее */
-}
-
-/* Активная ссылка */
 .menu-list a.is-active {
   background-color: #f0f0f0;
   /* светло-серый фон */
@@ -36,7 +21,7 @@
   background-color: #e0e0e0;
   /* чуть темнее при наведении */
   color: #000;
-  /* текст становится контрастнее */
+  /* текст становится более контрастным */
 }
 
 .has-shadow-strong {
@@ -54,6 +39,25 @@
   border-style: hidden solid hidden hidden;
   border-width: 1px;
   border-color: hsl(0, 0%, 86%)
+}
+
+.hero {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.file-upload-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.file-cta {
+  background-color: #3273dc;
+  color: white;
+}
+
+.file-cta:hover {
+  background-color: #276cda;
 }
 
 @media screen and (max-width: 768px) {

@@ -1,12 +1,60 @@
-<h1>Загрузка документов</h1>
+<section class="hero is-medium">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title has-text-centered has-text-white">Загрузка документів</h1>
+        <div class="file-upload-container">
+          <div class="card">
+            <div class="card-content">
+              <%= form_with model: @document, local: true, multipart: true do |f| %>
+                <div class="field">
+                  <%= f.label :files, "Виберіть документи", class: "label" %>
+                  <div class="file has-name is-fullwidth">
+                    <label class="file-label">
+                      <%= f.file_field :files, multiple: true, class: "file-input" %>
+                      <span class="file-cta">
+                        <span class="file-icon">
+                          <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label">
+                          Оберіть файли...
+                        </span>
+                      </span>
+                      <span class="file-name">
+                        Файли не обрано
+                      </span>
+                    </label>
+                  </div>
+                </div>
 
-<%= form_with model: @document, local: true, multipart: true do |f| %>
-  <div>
-    <%= f.label :files, "Виберіть документи" %><br>
-    <%= f.file_field :files, multiple: true %>
-  </div>
+                <div class="field">
+                  <div class="control">
+                    <%= f.submit "Додати", class: "button is-primary is-fullwidth" %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <div>
-    <%= f.submit "Додати" %>
-  </div>
-<% end %>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script>
+    // Используем 'turbo:load' для совместимости с Turbo в Rails
+    document.addEventListener('turbo:load', () => {
+      const fileInputs = document.querySelectorAll('.file-input');
+      fileInputs.forEach((input) => {
+        const fileName = input.closest('.file').querySelector('.file-name');
+        input.addEventListener('change', () => {
+          const files = input.files;
+          if (files.length > 0) {
+            const fileNames = Array.from(files).map(file => file.name).join(', ');
+            fileName.textContent = fileNames;
+          } else {
+            fileName.textContent = 'Файли не обрано';
+          }
+        });
+      });
+    });
+  </script>
