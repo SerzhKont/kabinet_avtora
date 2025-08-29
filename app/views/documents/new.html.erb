@@ -1,7 +1,7 @@
-<section class="hero is-medium">
+<section class="hero is-light">
     <div class="hero-body">
       <div class="container">
-        <h1 class="title has-text-centered has-text-white">Загрузка документів</h1>
+        <h1 class="title has-text-centered">Завантаження документів</h1>
         <div class="file-upload-container">
           <div class="card">
             <div class="card-content">
@@ -10,7 +10,7 @@
                   <%= f.label :files, "Виберіть документи", class: "label" %>
                   <div class="file has-name is-fullwidth">
                     <label class="file-label">
-                      <%= f.file_field :files, multiple: true, class: "file-input" %>
+                      <%= f.file_field :files, multiple: true, class: "file-input", id: "fileInput" %>
                       <span class="file-cta">
                         <span class="file-icon">
                           <i class="fas fa-upload"></i>
@@ -19,11 +19,16 @@
                           Оберіть файли...
                         </span>
                       </span>
-                      <span class="file-name">
+                      <span class="file-name" id="fileName">
                         Файли не обрано
                       </span>
                     </label>
                   </div>
+                </div>
+
+                <!-- Контейнер для списка файлов -->
+                <div class="content is-normal is-clipped" id="fileList" style="margin-top: 1rem;">
+                  <p>Список обраних файлів з'явиться тут...</p>
                 </div>
 
                 <div class="field">
@@ -39,22 +44,41 @@
     </div>
   </section>
 
+  <!-- Подключение Font Awesome для иконок -->
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script>
-    // Используем 'turbo:load' для совместимости с Turbo в Rails
     document.addEventListener('turbo:load', () => {
-      const fileInputs = document.querySelectorAll('.file-input');
-      fileInputs.forEach((input) => {
-        const fileName = input.closest('.file').querySelector('.file-name');
-        input.addEventListener('change', () => {
-          const files = input.files;
+      const fileInput = document.getElementById('fileInput');
+      const fileNameDisplay = document.getElementById('fileName');
+      const fileListDisplay = document.getElementById('fileList');
+
+      if (fileInput && fileNameDisplay && fileListDisplay) {
+        fileInput.addEventListener('change', () => {
+          const files = fileInput.files;
+
+          // Обновляем поле имени файла
+          fileNameDisplay.textContent = files.length > 0 
+            ? `${files.length} файл(ів) обрано` 
+            : 'Файли не обрано';
+
+          // Очищаем список файлов
+          fileListDisplay.innerHTML = '';
+
+          // Создаем список имен файлов с размерами
           if (files.length > 0) {
-            const fileNames = Array.from(files).map(file => file.name).join(', ');
-            fileName.textContent = fileNames;
+            const ul = document.createElement('ul');
+            ul.className = 'is-size-6';
+            Array.from(files).forEach(file => {
+              const li = document.createElement('li');
+              const sizeInMB = (file.size / (1024 * 1024)).toFixed(2); // Размер в МБ
+              li.textContent = `${file.name} (${sizeInMB} МБ)`;
+              ul.appendChild(li);
+            });
+            fileListDisplay.appendChild(ul);
           } else {
-            fileName.textContent = 'Файли не обрано';
+            fileListDisplay.innerHTML = '<p>Список обраних файлів з\'явиться тут...</p>';
           }
         });
-      });
+      }
     });
   </script>

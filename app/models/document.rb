@@ -5,12 +5,13 @@ class Document < ApplicationRecord
 
   has_one_attached :file
 
-  enum :status, { just_uploaded: "just_uploaded", pending: "pending", signed: "signed" }, default: "just_uploaded"
+  enum :status, { just_uploaded: "just_uploaded", pending: "pending", signed: "signed", rejected: "rejected" }, default: "just_uploaded"
 
   STATUS_LABELS = {
     "just_uploaded" => "Новий",
     "pending"       => "На підписанні",
-    "signed"        => "Підписано"
+    "signed"        => "Підписано",
+    "rejected"        => "Відхилено"
   }.freeze
 
   def status_label

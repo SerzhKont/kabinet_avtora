@@ -6,6 +6,10 @@
   display: none;
 }
 
+.dropdown-table {
+  display: inline-block;
+}
+
 .menu {
   display: block;
 }
@@ -41,9 +45,9 @@
   border-color: hsl(0, 0%, 86%)
 }
 
-.hero {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-}
+//.hero {
+// background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+//}
 
 .file-upload-container {
   max-width: 600px;
@@ -73,5 +77,10 @@
 
   .dropdown-menu {
     width: 100%;
+  }
+
+  .dropdown-table {
+    width: 100%;
+    text-align: center;
   }
 }
