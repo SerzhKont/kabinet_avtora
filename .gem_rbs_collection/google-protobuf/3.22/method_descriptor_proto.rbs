@@ -1,6 +1,0 @@
-module Google
-  module Protobuf
-    class MethodDescriptorProto < Google::Protobuf::AbstractMessage
-    end
-  end
-end

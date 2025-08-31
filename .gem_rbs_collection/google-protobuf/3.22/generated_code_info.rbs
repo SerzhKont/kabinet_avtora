@@ -1,6 +1,0 @@
-module Google
-  module Protobuf
-    class GeneratedCodeInfo < Google::Protobuf::AbstractMessage
-    end
-  end
-end

@@ -1,6 +1,0 @@
-module Google
-  module Protobuf
-    class UnexpectedStructType < Google::Protobuf::Error
-    end
-  end
-end
