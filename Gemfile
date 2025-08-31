@@ -10,9 +10,9 @@ gem "sqlite3", ">= 2.1"
 gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
+# Hotwire"s SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
+# Hotwire"s modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
@@ -53,6 +53,9 @@ end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
+  gem "solargraph"
+  gem "rubocop"
+  gem "solargraph-rails"
   gem "web-console"
 end
 
@@ -65,7 +68,4 @@ end
 gem "dartsass-rails", "~> 0.5.1"
 gem "bulma-rails", "~> 1.0.0"
 gem "amazing_print"
-gem "solargraph", group: :development
-gem "solargraph-rails"
-gem "erb-formatter", group: :development
 gem "paper_trail"

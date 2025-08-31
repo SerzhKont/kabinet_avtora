@@ -114,8 +114,6 @@ GEM
     drb (2.2.3)
     ed25519 (1.4.0)
     erb (5.0.2)
-    erb-formatter (0.7.3)
-      syntax_tree (~> 6.0)
     erubi (1.13.1)
     et-orbi (1.3.0)
       tzinfo
@@ -235,7 +233,6 @@ GEM
       racc
     pp (0.6.2)
       prettyprint
-    prettier_print (1.2.1)
     prettyprint (0.2.0)
     prism (1.4.0)
     propshaft (1.2.1)
@@ -409,8 +406,6 @@ GEM
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.1.7)
-    syntax_tree (6.3.0)
-      prettier_print (>= 1.2.0)
     thor (1.4.0)
     thruster (0.1.15)
     thruster (0.1.15-aarch64-linux)
@@ -463,7 +458,6 @@ DEPENDENCIES
   capybara
   dartsass-rails (~> 0.5.1)
   debug
-  erb-formatter
   image_processing (~> 1.2)
   importmap-rails
   jbuilder
@@ -472,6 +466,7 @@ DEPENDENCIES
   propshaft
   puma (>= 5.0)
   rails (~> 8.0.2, >= 8.0.2.1)
+  rubocop
   rubocop-rails-omakase
   selenium-webdriver
   solargraph
