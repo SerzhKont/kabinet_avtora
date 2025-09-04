@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_28_134342) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_04_163713) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -49,16 +49,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_28_134342) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "authors", force: :cascade do |t|
+    t.string "name"
+    t.string "email_address"
+    t.integer "code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_authors_on_code", unique: true
+  end
+
   create_table "documents", force: :cascade do |t|
     t.string "title"
-    t.text "description"
     t.string "status"
     t.integer "uploaded_by_id", null: false
     t.datetime "signed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "client_id"
-    t.index ["client_id"], name: "index_documents_on_client_id"
+    t.integer "author_id"
+    t.string "extracted_code"
+    t.index ["author_id"], name: "index_documents_on_author_id"
+    t.index ["extracted_code"], name: "index_documents_on_extracted_code"
     t.index ["signed_at"], name: "index_documents_on_signed_at"
     t.index ["status"], name: "index_documents_on_status"
     t.index ["uploaded_by_id"], name: "index_documents_on_uploaded_by_id"
@@ -79,9 +89,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_28_134342) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "role", default: "client", null: false
-    t.string "client_code"
     t.string "name"
-    t.index ["client_code"], name: "index_users_on_client_code", unique: true
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
     t.index ["role"], name: "index_users_on_role"
   end
@@ -98,7 +106,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_28_134342) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "documents", "users", column: "client_id"
+  add_foreign_key "documents", "authors"
   add_foreign_key "documents", "users", column: "uploaded_by_id"
   add_foreign_key "sessions", "users"
 end

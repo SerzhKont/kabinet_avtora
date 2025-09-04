@@ -1,0 +1,15 @@
+<%= form_with model: @author, local: true do |form| %>
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+  <div>
+    <%= form.label :email_address %>
+    <%= form.email_field :email_address %>
+  </div>
+  <div>
+    <%= form.label :code %>
+    <%= form.text_field :code %>
+  </div>
+  <%= form.submit "Создать автора" %>
+<% end %>

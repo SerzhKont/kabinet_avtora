@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resource :session, only: [ :new, :create, :destroy ]
   resources :documents
+  resources :authors
   root "documents#index"
   resources :passwords, param: :token
 

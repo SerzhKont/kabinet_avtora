@@ -1,10 +1,12 @@
 module DocumentsHelper
   def status_tag_class(status)
     case status
-    when "just_uploaded"
+    when "linked"
       "is-success"
+    when "unlinked"
+      "is-danger"
     when "pending"
-      "is-warning"
+      "is-info"
     when "signed"
       "is-primary"
     when "rejected"

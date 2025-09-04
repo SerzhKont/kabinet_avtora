@@ -15,9 +15,15 @@
       </div>
     </div>
     <div class="mb-4">
-      <%= link_to "Всі", documents_path, class: "button is-small #{'is-link' if params[:status].blank?}" %>
-      <%= link_to "З клієнтом", documents_path(status: 'linked'), class: "button is-small #{'is-link' if params[:status] == 'linked'}" %>
-      <%= link_to "Без клієнта", documents_path(status: 'unlinked'), class: "button is-small #{'is-link' if params[:status] == 'unlinked'}" %>
+      <%= link_to "Всі",
+      documents_path,
+      class: "button is-small #{"is-link" if params[:status].blank?}" %>
+      <%= link_to "З клієнтом",
+      documents_path(status: "linked"),
+      class: "button is-small #{"is-link" if params[:status] == "linked"}" %>
+      <%= link_to "Без клієнта",
+      documents_path(status: "unlinked"),
+      class: "button is-small #{"is-link" if params[:status] == "unlinked"}" %>
     </div>
     <table class="table is-fullwidth is-hoverable is-narrow">
       <thead>
@@ -25,6 +31,7 @@
           <th>Назва</th>
           <th>Статус</th>
           <th>Клієнт</th>
+          <th>ІПН</th>
           <th>Завантажив</th>
           <th>Додано</th>
           <th>Підписано</th>
@@ -35,17 +42,18 @@
       <tbody>
         <% @documents.each do |doc| %>
           <tr class="<%= 'has-background-warning-light' if doc.status == 'unlinked' %>">
-            <td><%= doc.title.presence || (doc.file.attached? ? doc.file.filename : '-') %></td>
+            <td><%= doc.title.presence || (doc.file.attached? ? doc.file.filename : "-") %></td>
             <td>
               <span class="tag <%= status_tag_class(doc.status) %> has-text-dark">
                 <%= doc.status_label %>
               </span>
             </td>
-            <td><%= doc.client&.name || 'Не знайдено' %></td>
-            <td><%= doc.uploaded_by&.name || '-' %></td>
+            <td><%= doc.author&.name || "Не знайдено" %></td>
+            <td><%= doc.extracted_code || "Не знайдено" %></td>
+            <td><%= doc.uploaded_by&.name || "-" %></td>
             <td><%= doc.created_at.strftime("%Y-%m-%d %H:%M") %></td>
-            <td><%= doc.signed_at&.strftime("%Y-%m-%d %H:%M") || '-' %></td>
-            <td><%= doc.description.presence || '-' %></td>
+            <td><%= doc.signed_at&.strftime("%Y-%m-%d %H:%M") || "-" %></td>
+            <td><%= doc.description.presence || "-" %></td>
             <td>
               <div class="dropdown dropdown-table is-right">
                 <div class="dropdown-trigger">
@@ -66,13 +74,15 @@
                         Завантажити
                       <% end %>
                     <% end %>
-
                     <%= link_to edit_document_path(doc), class: "dropdown-item" do %>
                       <span class="icon is-small"><i class="fas fa-edit" aria-hidden="true"></i></span>
                       Редагувати
                     <% end %>
 
-                    <a class="dropdown-item" onclick="document.getElementById('delete-modal-<%= doc.id %>').classList.add('is-active')">
+                    <a
+                      class="dropdown-item"
+                      onclick="document.getElementById('delete-modal-<%= doc.id %>').classList.add('is-active')"
+                    >
                       <span class="icon is-small"><i class="fas fa-trash-alt" aria-hidden="true"></i></span>
                       Видалити
                     </a>
@@ -92,18 +102,26 @@
                 <div class="modal-card">
                   <header class="modal-card-head">
                     <p class="modal-card-title">Підтвердіть видалення файла</p>
-                    <button class="delete" aria-label="close" onclick="this.closest('.modal').classList.remove('is-active')"></button>
+                    <button
+                      class="delete"
+                      aria-label="close"
+                      onclick="this.closest('.modal').classList.remove('is-active')"
+                    ></button>
                   </header>
                   <section class="modal-card-body">
-                    Ви впевнені, що хочете видалити документ <strong><%= doc.title %></strong>?
+                    Ви впевнені, що хочете видалити документ
+                    <strong><%= doc.title %></strong>?
                   </section>
                   <footer class="modal-card-foot">
                     <div class="buttons">
                       <%= button_to "Так, видалити",
-                                    document_path(doc),
-                                    method: :delete,
-                                    class: "button is-danger" %>
-                      <button class="button" onclick="this.closest('.modal').classList.remove('is-active')">Скасувати</button>
+                      document_path(doc),
+                      method: :delete,
+                      class: "button is-danger" %>
+                      <button
+                        class="button"
+                        onclick="this.closest('.modal').classList.remove('is-active')"
+                      >Скасувати</button>
                     </div>
                   </footer>
                 </div>
