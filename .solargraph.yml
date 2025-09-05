@@ -9,8 +9,7 @@ exclude:
   - test/**/*
   - vendor/**/*
   - ".bundle/**/*"
-require:
-  - rubocop
+require: []
 domains: []
 reporters:
   - rubocop

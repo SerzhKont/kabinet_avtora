@@ -1,0 +1,109 @@
+<div class="columns is-gap-1">
+  <div class="column is-narrow has-border-right">
+    <%= render "layouts/sidebar" %>
+  </div>
+  <div class="column">
+    <div class="field is-grouped">
+      <div class="control">
+        <input class="input" type="text" placeholder="Поиск...">
+      </div>
+      <div class="control">
+        <button class="button is-primary">Знайти</button>
+      </div>
+      <div class="control">
+        <%= link_to "Додати автора", new_author_path, class: "button is-primary" %>
+      </div>
+    </div>
+    <table class="table is-fullwidth is-hoverable is-narrow">
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>Автор</th>
+          <th>Пошта</th>
+          <th>ІПН</th>
+          <th>Додано</th>
+          <th>Оновлено</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @authors.each do |author| %>
+          <tr>
+            <td><%= author.id %></td>
+            <td><%= author.name %></td>
+            <td><%= author.email_address %></td>
+            <td><%= author.code %></td>
+            <td><%= author.created_at.strftime("%Y/%m/%d %H:%M") %></td>
+            <td><%= author.updated_at.strftime("%Y/%m/%d %H:%M") %></td>
+            <td>
+              <div class="dropdown dropdown-table is-right">
+                <div class="dropdown-trigger">
+                  <button
+                    class="button is-small"
+                    aria-haspopup="true"
+                    aria-controls="dropdown-table-menu"
+                  >
+                    <span class="icon is-small">
+                      <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                    </span>
+                  </button>
+                </div>
+                <div class="dropdown-menu" id="dropdown-table-menu" role="menu">
+                  <div class="dropdown-content">
+
+                    <%= link_to edit_author_path(author), class: "dropdown-item" do %>
+                      <span class="icon is-small"><i class="fas fa-edit" aria-hidden="true"></i></span>
+                      Редагувати
+                    <% end %>
+
+                    <a
+                      href="#"
+                      class="dropdown-item modal-trigger"
+                      data-target="delete-author-modal-<%= author.id %>"
+                    >
+                      <span class="icon is-small"><i class="fas fa-trash-alt" aria-hidden="true"></i></span>
+                      Видалити
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div id="delete-author-modal-<%= author.id %>" class="modal">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                  <header class="modal-card-head">
+                    <p class="modal-card-title">Підтвердіть видалення автора</p>
+                    <button
+                      class="delete"
+                      aria-label="Close the modal"
+                      onclick="this.closest('.modal').classList.remove('is-active')"
+                    ></button>
+                  </header>
+                  <section class="modal-card-body">
+                    Ви впевнені, що хочете видалити автора
+                    <strong><%= author.name %></strong>?
+                  </section>
+                  <footer class="modal-card-foot">
+                    <div class="buttons">
+                      <%= button_to "Так, видалити",
+                      author_path(author),
+                      method: :delete,
+                      class: "button is-danger",
+                      data: {
+                        confirm: "Ви впевнені?",
+                      } %>
+                      <button
+                        class="button"
+                        onclick="this.closest('.modal').classList.remove('is-active')"
+                      >Скасувати</button>
+                    </div>
+                  </footer>
+                </div>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

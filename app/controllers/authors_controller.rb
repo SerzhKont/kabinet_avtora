@@ -1,8 +1,13 @@
 class AuthorsController < ApplicationController
-  before_action :ensure_manager, only: [ :new, :create, :edit, :update ]
+  def index
+    @authors = Author.all
+  end
 
   def new
     @author = Author.new
+  end
+
+  def show
   end
 
   def create
@@ -14,13 +19,19 @@ class AuthorsController < ApplicationController
     end
   end
 
+  def destroy
+    @author = Author.find(params[:id])
+    if @author.destroy
+      flash[:notice] = "Автор успешно удален."
+    else
+      flash[:alert] = "Ошибка при удалении автора."
+    end
+    redirect_to authors_path
+  end
+
   private
 
   def author_params
     params.require(:author).permit(:name, :email_address, :code)
-  end
-
-  def ensure_manager
-    redirect_to root_path, alert: "Доступ запрещен." unless current_user.manager? || current_user.admin?
   end
 end

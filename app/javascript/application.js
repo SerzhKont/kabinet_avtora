@@ -34,4 +34,40 @@ document.addEventListener('turbo:load', () => {
       dropdown.classList.remove('is-active');
     });
   });
+
+  // Обработчик для модалок
+  const modals = document.querySelectorAll('.modal');
+  const modalTriggers = document.querySelectorAll('.modal-trigger');
+
+  // Открытие модалки
+  modalTriggers.forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      const modalId = trigger.getAttribute('data-target');
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.add('is-active');
+      }
+    });
+  });
+
+  // Закрытие модалки при клике на фон или кнопку закрытия
+  modals.forEach(modal => {
+    const closeButtons = modal.querySelectorAll('.delete, .modal-background, .button[onclick]');
+    closeButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        modal.classList.remove('is-active');
+      });
+    });
+  });
+
+  // Закрытие модалки после успешного удаления (для AJAX)
+  document.addEventListener('ajax:complete', (event) => {
+    const [response, status, xhr] = event.detail;
+    if (status === 'success' && xhr.responseURL.includes('/authors/')) {
+      modals.forEach(modal => {
+        modal.classList.remove('is-active');
+      });
+    }
+  });
 });
