@@ -7,9 +7,11 @@
       <div class="control">
         <input class="input" type="text" placeholder="Поиск...">
       </div>
+
       <div class="control">
         <button class="button is-primary">Знайти</button>
       </div>
+
       <div class="control">
         <%= link_to "Додати автора", new_author_path, class: "button is-primary" %>
       </div>
@@ -50,9 +52,10 @@
                 </div>
                 <div class="dropdown-menu" id="dropdown-table-menu" role="menu">
                   <div class="dropdown-content">
-
                     <%= link_to edit_author_path(author), class: "dropdown-item" do %>
-                      <span class="icon is-small"><i class="fas fa-edit" aria-hidden="true"></i></span>
+                      <span class="icon is-small">
+                        <i class="fas fa-edit" aria-hidden="true"></i>
+                      </span>
                       Редагувати
                     <% end %>
 
@@ -61,7 +64,9 @@
                       class="dropdown-item modal-trigger"
                       data-target="delete-author-modal-<%= author.id %>"
                     >
-                      <span class="icon is-small"><i class="fas fa-trash-alt" aria-hidden="true"></i></span>
+                      <span class="icon is-small">
+                        <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                      </span>
                       Видалити
                     </a>
                   </div>
@@ -79,10 +84,13 @@
                       onclick="this.closest('.modal').classList.remove('is-active')"
                     ></button>
                   </header>
+
                   <section class="modal-card-body">
                     Ви впевнені, що хочете видалити автора
-                    <strong><%= author.name %></strong>?
+                    <strong><%= author.name %></strong>
+                    ?
                   </section>
+
                   <footer class="modal-card-foot">
                     <div class="buttons">
                       <%= button_to "Так, видалити",
@@ -95,7 +103,9 @@
                       <button
                         class="button"
                         onclick="this.closest('.modal').classList.remove('is-active')"
-                      >Скасувати</button>
+                      >
+                        Скасувати
+                      </button>
                     </div>
                   </footer>
                 </div>

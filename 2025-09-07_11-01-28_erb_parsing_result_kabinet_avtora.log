@@ -1,0 +1,37 @@
+--- METADATA -------------------------------------------------------------------
+Herb Version: herb gem v0.7.0, libprism v1.4.0, libherb v0.7.0 (Ruby C native extension)
+Reported at: 2025-09-07T11:01:28
+
+--- PROJECT --------------------------------------------------------------------
+Path: /home/serzh/git/kabinet_avtora
+Glob: /home/serzh/git/kabinet_avtora**/*.html.erb
+
+--- PROCESSED FILES ------------------------------------------------------------
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/active_storage/blobs/_blob.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/authors/index.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/authors/new.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/documents/client_index.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/documents/create.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/documents/edit.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/documents/index.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/documents/new.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/documents/show.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/layouts/_flash.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/layouts/_notifications.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/layouts/_sidebar.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/layouts/action_text/contents/_content.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/layouts/application.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/layouts/mailer.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/passwords/edit.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/passwords/new.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/passwords_mailer/reset.html.erb successfully
+✅ Parsed /home/serzh/git/kabinet_avtora/app/views/sessions/new.html.erb successfully
+
+--- SUMMARY --------------------------------------------------------------------
+Total files: 19
+✅ Successful: 19 (100.0%)
+❌ Failed: 0 (0.0%)
+⚠️ Parse errors: 0 (0.0%)
+⏱️ Timed out: 0 (0.0%)
+
+⏱️ Total time: 83.73ms

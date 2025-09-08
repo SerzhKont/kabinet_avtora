@@ -1,35 +1,58 @@
 <!DOCTYPE html>
+
 <html>
   <head>
-    <title>Документа автора</title>
+    <title>Документи автора</title>
+
     <meta name="viewport" content="width=device-width,initial-scale=1">
+
     <meta name="apple-mobile-web-app-capable" content="yes">
+
     <meta name="mobile-web-app-capable" content="yes">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+    <%# = tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
     <link rel="apple-touch-icon" href="/icon.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <%= favicon_link_tag 'faviconnew.ico' %>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <%= favicon_link_tag "faviconnew.ico" %>
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    <%= javascript_include_tag 'application' %>
+    <%= javascript_include_tag "application" %>
   </head>
 
   <body>
-    <header class="navbar is-light is-fixed-top has-border-bottom" role="navigation" aria-label="main navigation">
+    <header
+      class="navbar is-light is-fixed-top has-border-bottom"
+      role="navigation"
+      aria-label="Main navigation bar"
+    >
       <div class="navbar-brand">
-        <%= link_to root_path, class: "navbar-item is-size-4 has-text-weight-bold has-text-dark" do %> 
-          <%= image_tag "faviconnew.ico", alt: "Кабінет Автора Logo", style: "max-width: 40px; height: auto;" %>
+        <%= link_to root_path, class: "navbar-item is-size-4 has-text-weight-bold has-text-dark" do %>
+          <%= image_tag "faviconnew.ico",
+          alt: "Кабінет Автора Logo",
+          style: "max-width: 40px; height: auto;" %>
           <span>Документи автора</span>
         <% end %>
-        <a class="navbar-burger has-text-dark" role="button" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+        <a
+          href="#"
+          class="navbar-burger has-text-dark"
+          role="button"
+          aria-label="Main menu"
+          aria-expanded="false"
+          data-target="navbarMenu"
+        >
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
@@ -39,9 +62,7 @@
       <div class="navbar-menu" id="navbarMenu">
         <div class="navbar-end">
           <% if authenticated? %>
-              <span class="navbar-item has-text-weight-medium">
-                <%= @current_user.name %>
-              </span>
+            <span class="navbar-item has-text-weight-medium"><%= @current_user.name %></span>
             <div class="navbar-item">
               <%= button_to session_path, method: :delete, class: "navbar-item button is-light" do %>
                 <span class="icon-text">
@@ -55,10 +76,11 @@
       </div>
     </header>
 
-    <main class="section is-flex is-align-items-flex-start " style="min-height: 100vh;" >
-      <div class="container pt-5">
-        <%= yield %>
-      </div>
+    <main
+      class="section is-flex is-align-items-flex-start"
+      style="min-height: 100vh;"
+    >
+      <div class="container pt-5"><%= yield %></div>
     </main>
 
     <footer class="footer has-background-link">

@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   resources :authors
   root "documents#index"
   resources :passwords, param: :token
-
+def de
+ "hell"
+end
   post "dismiss_notification", to: "application#dismiss_notification", as: :dismiss_notification
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
