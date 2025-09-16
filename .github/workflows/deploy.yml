@@ -10,7 +10,7 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with: { ruby-version: "3.2" }
       - run: bundle install
-      - uses: azure/webapps-deploy@v2
+      - uses: azure/webapps-deploy@v3
         with:
           app-name: "yourapp"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
