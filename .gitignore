@@ -37,3 +37,4 @@
 !/app/assets/builds/.keep
 
 .gem_rbs_collection
+.env

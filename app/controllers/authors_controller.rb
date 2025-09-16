@@ -29,6 +29,14 @@ class AuthorsController < ApplicationController
     redirect_to authors_path
   end
 
+  def author_index
+    @author = Author.find_by(access_token: params[:access_token])
+    if @author && @author.access_token_expires_at > Time.current
+      @documents = @author.documents.where(status: [ "pending", "linked" ])
+    else
+      redirect_to root_path, alert: "Посилання недійсне або прострочене."
+    end
+end
   private
 
   def author_params

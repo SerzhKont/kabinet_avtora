@@ -1,7 +1,38 @@
 class DocumentsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, only: [ :author_index, :sign_one, :sign_all ]
   before_action :ensure_manager, only: [ :edit, :update ]
   before_action :set_document, only: [ :show, :edit, :update, :destroy ]
+
+  def author_index
+    @author = Author.find_by(code: params[:author_code])
+    if @author
+      @documents = @author.documents.where(status: [ "pending", "linked" ])
+    else
+      redirect_to root_path, alert: "Автор із кодом #{params[:author_code]} не знайдений."
+    end
+  end
+
+  def sign_one
+    @document = Document.find(params[:id])
+    @author = Author.find_by(code: params[:author_code])
+    unless @author && @document.author == @author
+      redirect_to root_path, alert: "Недійсний документ або код автора."
+      return
+    end
+    # Заглушка для Дія.Підпис (добавим позже)
+    redirect_to author_documents_path(author_code: @author.code), notice: "Підпис одного документа (заглушка)."
+  end
+
+  def sign_all
+    @author = Author.find_by(code: params[:author_code])
+    unless @author
+      redirect_to root_path, alert: "Автор із кодом #{params[:author_code]} не знайдений."
+      return
+    end
+    @documents = @author.documents.where(status: [ "pending", "linked" ]).limit(7)  # Max 7 для Дія
+    # Заглушка для Дія.Підпис
+    redirect_to author_documents_path(author_code: @author.code), notice: "Підпис всіх документів (заглушка)."
+  end
 
   def index
     if params[:status].present?

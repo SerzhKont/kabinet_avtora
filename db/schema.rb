@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead
+ This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_04_163713) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_16_083951) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -55,6 +55,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_163713) do
     t.integer "code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "access_token"
+    t.datetime "access_token_expires_at"
+    t.index ["access_token"], name: "index_authors_on_access_token", unique: true
     t.index ["code"], name: "index_authors_on_code", unique: true
   end
 
@@ -67,6 +70,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_163713) do
     t.datetime "updated_at", null: false
     t.integer "author_id"
     t.string "extracted_code"
+    t.string "file_hash"
+    t.text "signed_data"
     t.index ["author_id"], name: "index_documents_on_author_id"
     t.index ["extracted_code"], name: "index_documents_on_extracted_code"
     t.index ["signed_at"], name: "index_documents_on_signed_at"

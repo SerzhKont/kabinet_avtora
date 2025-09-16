@@ -49,6 +49,8 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem "letter_opener", "~> 1.4", ">= 1.4.1"
 end
 
 group :development do
@@ -69,3 +71,6 @@ gem "dartsass-rails", "~> 0.5.1"
 gem "bulma-rails", "~> 1.0.0"
 gem "amazing_print"
 gem "paper_trail"
+gem "faraday"
+gem "pg", "~> 1.6", ">= 1.6.2"
+gem "dotenv-rails", "~> 3.1", ">= 3.1.8", groups: [ :development, :test ]

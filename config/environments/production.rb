@@ -58,7 +58,19 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address: "smtp.office365.com",
+    port: 587,
+    domain: "yourdomain.com",  # Замени на свой домен
+    user_name: ENV["AZURE_EMAIL_USER"],
+    password: ENV["AZURE_EMAIL_PASS"],
+    authentication: "login",
+    enable_starttls_auto: true
+  }
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.default_url_options = { host: "yourapp.azurewebsites.net" }  # Azure domain
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {

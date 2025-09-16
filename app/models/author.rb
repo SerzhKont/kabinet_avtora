@@ -1,5 +1,11 @@
 class Author < ApplicationRecord
-  validates :code, presence: true, uniqueness: true
+  has_secure_token :access_token
+  validates :code, presence: true, uniqueness: true, length: { is: 10 }, numericality: { only_integer: true }
   validates :name, presence: true
-  has_many :documens
+  has_many :documents, dependent: :destroy
+
+  def regenerate_access_token_with_expiry(days = 7)
+    regenerate_access_token  # Из has_secure_token
+    update!(access_token_expires_at: days.days.from_now)
+  end
 end

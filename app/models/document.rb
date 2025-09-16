@@ -22,8 +22,10 @@ class Document < ApplicationRecord
   validates :title, presence: true
   validates :file, presence: true
   validates :uploaded_by, presence: true
+  validate :check_file_size
 
   before_validation :extract_metadata, if: -> { file.attached? }
+  before_save :generate_file_hash, if: -> { file.attached? && file.changed? }
 
   private
 
@@ -42,6 +44,18 @@ class Document < ApplicationRecord
     else
       self.status ||= "unlinked"
       Rails.logger.warn("Author not found for code: #{code}")
+    end
+  end
+
+  def generate_file_hash
+    content = file.download
+    # Пока SHA256 (встроенный), для ГОСТ добавим gem позже
+    self.file_hash = Base64.encode64(Digest::SHA256.digest(content)).chomp
+  end
+
+  def check_file_size
+    if file.attached? && file.blob.byte_size > 5.megabytes
+      errors.add(:file, "размер файла превышает допустимый лимит (5 МБ)")
     end
   end
 end

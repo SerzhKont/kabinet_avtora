@@ -70,4 +70,67 @@ document.addEventListener('turbo:load', () => {
       });
     }
   });
+
+  const selectAllCheckbox = document.getElementById('select-all-documents');
+  const documentCheckboxes = document.querySelectorAll('.document-checkbox');
+  const signButton = document.getElementById('sign-selected-documents');
+  const selectedCount = document.getElementById('selected-count');
+
+  // Активация/деактивация кнопки отправки
+  function updateSignButton() {
+    const checkedCount = document.querySelectorAll('.document-checkbox:checked').length;
+    selectedCount.textContent = checkedCount;
+    signButton.disabled = checkedCount === 0;
+  }
+
+  // Обработчик для "Выбрать все"
+  selectAllCheckbox.addEventListener('change', function() {
+    documentCheckboxes.forEach(cb => {
+      cb.checked = this.checked;
+    });
+    updateSignButton();
+  });
+
+  // Обработчик для отдельных чекбоксов
+  documentCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      if (!this.checked) {
+        selectAllCheckbox.checked = false;
+      }
+      updateSignButton();
+    });
+  });
+
+  // Обработчик кнопки отправки
+signButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    const selectedDocs = Array.from(document.querySelectorAll('.document-checkbox:checked')).map(cb => ({
+      id: cb.value,
+      title: cb.dataset.title
+    }));
+
+    if (selectedDocs.length > 0) {
+      fetch('/documents/send_signing_link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ document_ids: selectedDocs.map(doc => doc.id) })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.deeplink) {
+          alert(`Ссылка отправлена автору: ${data.deeplink}`);
+          // Здесь можно отправить deeplink по email или через уведомление
+        } else {
+          alert('Ошибка при создании deeplink: ' + (data.error || 'Неизвестная ошибка'));
+        }
+      })
+      .catch(error => {
+        console.error('Ошибка:', error);
+        alert('Произошла ошибка при отправке запроса.');
+      });
+    }
+  });
 });

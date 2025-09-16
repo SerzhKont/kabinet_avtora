@@ -26,13 +26,13 @@
   </div>
 </div>
 
-<aside class="menu" style="position: sticky; top: 4.25rem; width: 200px">
+<aside class="menu">
   <p class="menu-label has-text-weight-semibold">Розділи</p>
   <ul class="menu-list">
     <li>
       <%= link_to "Документи",
       documents_path,
-      class: ("is-activer" if current_page?(documents_path)) %>
+      class: ("is-active" if current_page?(documents_path)) %>
     </li>
     <li>
       <%= link_to "Автори",

@@ -1,0 +1,25 @@
+<section class="section">
+  <div class="container">
+    <h1 class="title">Документи для <%= @author.name %></h1>
+    <% if @documents.any? %>
+      <div class="columns is-multiline">
+        <% @documents.each do |doc| %>
+          <div class="column is-one-third">
+            <div class="card">
+              <div class="card-content">
+                <p class="title is-5"><%= doc.title %></p>
+
+                <p class="subtitle is-6">Статус: <%= doc.status_label %></p>
+
+                <%= link_to 'Підписати', sign_one_document_path(id: doc.id, author_code: @author.code), method: :post, class: 'button is-primary' %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <%= link_to 'Підписати всі', sign_all_author_documents_path(author_code: @author.code), method: :post, class: 'button is-info' %>
+    <% else %>
+      <p class="notification is-warning">Немає документів для підпису.</p>
+    <% end %>
+  </div>
+</section>
