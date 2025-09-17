@@ -8,7 +8,7 @@
         <div class="level-item">
           <%= search_form_for @q, class: "field has-addons" do |f| %>
             <p class="control has-icons-left">
-              <%= f.search_field :author_name_or_extracted_code_cont, 
+              <%= f.search_field :title_or_extracted_code_cont,
                                 class: "input", 
                                 placeholder: "Знайти по автору або ІПН" %>
               <span class="icon is-small is-left">
@@ -26,7 +26,13 @@
           <span>Завантажити документи</span>
         <% end %>
 
-        <button class="button is-success" id="sign-selected-documents" disabled>
+        <button
+          class="button is-success"
+          id="sign-selected-documents"
+          data-checkbox-target="signButton"
+          data-action="click->checkbox#sendSignRequest"
+          disabled
+        >
           <span class="icon is-small">
             <i class="fas fa-signature"></i>
           </span>
@@ -55,19 +61,24 @@
         <div class="level-item">
           <p class="subtitle is-6">
             Документів обрано:
-            <strong><span id="selected-count">0</span></strong>
+            <strong><span id="selected-count" data-checkbox-target="selectedCount">0</span></strong>
           </p>
         </div>
       </div>
     </nav>
 
-    <turbo-frame id="documents_table">
+    <turbo-frame id="documents_table" data-controller="checkbox">
       <div class="table-container">
         <table class="table is-fullwidth is-hoverable is-narrow">
           <thead>
             <tr class="is-size-6">
               <th>
-                <input type="checkbox" id="select-all-documents">
+                <input
+                  type="checkbox"
+                  id="select-all-documents"
+                  data-checkbox-target="selectAll"
+                  data-action="change->checkbox#toggleAll"
+                >
               </th>
               <th class="has-text-black" has-text-black>
                 <%= sort_link(@q, :title, "Назва") %>
@@ -101,9 +112,11 @@
                     type="checkbox"
                     class="document-checkbox"
                     value="<%= doc.id %>"
+                    data-checkbox-target="checkbox"
+                    data-action="change->checkbox#toggleCheckbox"
                   >
                 </td>
-                <td class="has-text-link">
+                <td>
                   <%= link_to doc.file.filename, rails_blob_url(doc.file, disposition: 'attachment') if doc.file.attached? %>
                 </td>
                 <td>
@@ -115,12 +128,16 @@
                 <td><%= doc.created_at.strftime("%Y/%m/%d") %></td>
                 <td><%= doc.signed_at&.strftime("%Y/%m/%d") || "-" %></td>
                 <td>
-                  <div class="dropdown dropdown-table is-right">
+                  <div
+                    class="dropdown dropdown-table is-right"
+                    data-controller="dropdown"
+                  >
                     <div class="dropdown-trigger">
                       <button
                         class="button is-small"
                         aria-haspopup="true"
                         aria-controls="dropdown-table-menu"
+                        data-action="click->dropdown#toggle"
                       >
                         <span class="icon is-small">
                           <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
@@ -131,6 +148,7 @@
                       class="dropdown-menu"
                       id="dropdown-table-menu"
                       role="menu"
+                      data-dropdown-target="menu"
                     >
                       <div class="dropdown-content">
                         <% if doc.file.attached? %>
@@ -152,7 +170,9 @@
                         <a
                           href="#"
                           class="dropdown-item"
-                          onclick="document.getElementById('delete-modal-<%= doc.id %>').classList.add('is-active')"
+                          data-controller="modal"
+                          data-action="click->modal#open"
+                          data-modal-id="delete-modal-<%= doc.id %>"
                         >
                           <span class="icon is-small">
                             <i class="fas fa-trash-alt" aria-hidden="true"></i>
@@ -163,8 +183,15 @@
                     </div>
                   </div>
 
-                  <div id="delete-modal-<%= doc.id %>" class="modal">
-                    <div class="modal-background"></div>
+                  <div
+                    id="delete-modal-<%= doc.id %>"
+                    class="modal"
+                    data-controller="modal"
+                  >
+                    <div
+                      class="modal-background"
+                      data-action="click->modal#close"
+                    ></div>
                     <div class="modal-card">
                       <header class="modal-card-head">
                         <p class="modal-card-title">
@@ -173,7 +200,7 @@
                         <button
                           class="delete"
                           aria-label="Submit document deletion and close"
-                          onclick="this.closest('.modal').classList.remove('is-active')"
+                          data-action="click->modal#close"
                         ></button>
                       </header>
 
@@ -191,7 +218,7 @@
                       class: "button is-danger" %>
                           <button
                             class="button"
-                            onclick="this.closest('.modal').classList.remove('is-active')"
+                            data-action="click->modal#close"
                           >
                             Скасувати
                           </button>
