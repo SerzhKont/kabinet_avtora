@@ -1,7 +1,11 @@
 class DocumentsController < ApplicationController
+  include Pagy::Backend
+  include Pagy::Frontend
+
   before_action :authenticate_user!, only: [ :author_index, :sign_one, :sign_all ]
   before_action :ensure_manager, only: [ :edit, :update ]
   before_action :set_document, only: [ :show, :edit, :update, :destroy ]
+
 
   def author_index
     @author = Author.find_by(code: params[:author_code])
@@ -35,11 +39,9 @@ class DocumentsController < ApplicationController
   end
 
   def index
-    if params[:status].present?
-      @documents = Document.where(status: params[:status]).order(created_at: :desc)
-    else
-      @documents = Document.all.order(created_at: :desc)
-    end
+    @q = Document.ransack(params[:q])
+    scope = params[:status].present? ? Document.where(status: params[:status]) : Document.all
+    @pagy, @documents = pagy(@q.result(distinct: true).merge(scope).includes(:author, :uploaded_by))
   end
 
   def show
@@ -93,7 +95,7 @@ class DocumentsController < ApplicationController
   end
 
   def document_params
-    params.require(:document).permit(:title, :author_id, :status)
+    params.require(:document).permit(:title, :author_id, :status, :file)
   end
 
   def ensure_manager

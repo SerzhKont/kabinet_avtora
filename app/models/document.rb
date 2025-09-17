@@ -25,7 +25,17 @@ class Document < ApplicationRecord
   validate :check_file_size
 
   before_validation :extract_metadata, if: -> { file.attached? }
-  before_save :generate_file_hash, if: -> { file.attached? && file.changed? }
+  # before_save :generate_file_hash, if: -> { file.attached? && file.changed? }
+
+  # Allow searching/sorting on these attributes
+  def self.ransackable_attributes(auth_object = nil)
+    %w[title content created_at status extracted_code signed_at]
+  end
+
+  # Allow searching/sorting on associations (if any)
+  def self.ransackable_associations(auth_object = nil)
+    %w[author uploaded_by]
+  end
 
   private
 
@@ -47,11 +57,11 @@ class Document < ApplicationRecord
     end
   end
 
-  def generate_file_hash
-    content = file.download
-    # Пока SHA256 (встроенный), для ГОСТ добавим gem позже
-    self.file_hash = Base64.encode64(Digest::SHA256.digest(content)).chomp
-  end
+  # def generate_file_hash
+  #   content = file.download
+  #   # Пока SHA256 (встроенный), для ГОСТ добавим gem позже
+  #   self.file_hash = Base64.encode64(Digest::SHA256.digest(content)).chomp
+  # end
 
   def check_file_size
     if file.attached? && file.blob.byte_size > 5.megabytes

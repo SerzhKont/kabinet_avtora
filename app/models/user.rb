@@ -10,4 +10,8 @@ class User < ApplicationRecord
   validates :email_address, presence: true, uniqueness: true
   validates :name, presence: true
   validates :password, presence: true, length: { minimum: 6 }, if: :password
+
+  def self.ransackable_attributes(auth_object = nil)
+    %w[ email_address name ]
+  end
 end

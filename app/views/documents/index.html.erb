@@ -6,22 +6,17 @@
     <nav class="level">
       <div class="level-left">
         <div class="level-item">
-          <div class="field has-addons">
+          <%= search_form_for @q, class: "field has-addons" do |f| %>
             <p class="control has-icons-left">
-              <input
-                class="input"
-                type="text"
-                placeholder="Знайти по автору або ІПН"
-              >
+              <%= f.search_field :author_name_or_extracted_code_cont, 
+                                class: "input", 
+                                placeholder: "Знайти по автору або ІПН" %>
               <span class="icon is-small is-left">
                 <i class="fa-solid fa-magnifying-glass"></i>
               </span>
             </p>
-
-            <p class="control">
-              <button class="button">Пошук</button>
-            </p>
-          </div>
+            <p class="control"><%= f.submit "Пошук", class: "button" %></p>
+          <% end %>
         </div>
 
         <%= link_to new_document_path, class: "button is-primary" do %>
@@ -45,155 +40,174 @@
         <div class="level-item">
           <div class="buttons has-addons mb-4">
             <%= link_to "Всі",
-              documents_path,
-              class: "button is-small #{"is-link" if params[:status].blank?}" %>
+                        documents_path(params.permit(:q).merge(status: nil)),
+                        class: "button is-small #{"is-link" if params[:status].blank?}" %>
             <%= link_to "Є автор",
-              documents_path(status: "linked"),
-              class: "button is-small #{"is-success is-selected" if params[:status] == "linked"}" %>
+                        documents_path(params.permit(:q).merge(status: "linked")),
+                        class: "button is-small #{"is-success is-selected" if params[:status] == "linked"}" %>
             <%= link_to "Без автора",
-              documents_path(status: "unlinked"),
-              class: "button is-small  #{"is-danger is-selected" if params[:status] == "unlinked"}" %>
+                        documents_path(params.permit(:q).merge(status: "unlinked")),
+                        class: "button is-small #{"is-danger is-selected" if params[:status] == "unlinked"}" %>
           </div>
         </div>
       </div>
       <div class="level-right">
         <div class="level-item">
           <p class="subtitle is-6">
-            Докуменів обрано:
+            Документів обрано:
             <strong><span id="selected-count">0</span></strong>
           </p>
         </div>
       </div>
     </nav>
 
-    <div class="table-container">
-      <table class="table is-fullwidth is-hoverable is-narrow">
-        <thead>
-          <tr class="is-size-6">
-            <th>
-              <input type="checkbox" id="select-all-documents">
-            </th>
-            <th>Назва</th>
-            <th>Статус</th>
-            <th>Автор</th>
-            <th>ІПН</th>
-            <th>Завантажив</th>
-            <th>Додано</th>
-            <th>Підписано</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @documents.each do |doc| %>
-            <tr class="<%= 'has-background-warning-light' if doc.status == 'unlinked' %>">
-              <td>
-                <input
-                  type="checkbox"
-                  class="document-checkbox"
-                  value="<%= doc.id %>"
-                >
-              </td>
-              <td class="has-text-link">
-                <%= doc.title.presence || (doc.file.attached? ? doc.file.filename : "-") %>
-              </td>
-              <td>
-                <span class="tag <%= status_tag_class(doc.status) %> has-text-dark"><%= doc.status_label %></span>
-              </td>
-              <td><%= doc.author&.name || "-" %></td>
-              <td><%= doc.extracted_code || "-" %></td>
-              <td><%= doc.uploaded_by&.name || "-" %></td>
-              <td><%= doc.created_at.strftime("%Y/%m/%d") %></td>
-              <td><%= doc.signed_at&.strftime("%Y/%m/%d") || "-" %></td>
-              <td>
-                <div class="dropdown dropdown-table is-right">
-                  <div class="dropdown-trigger">
-                    <button
-                      class="button is-small"
-                      aria-haspopup="true"
-                      aria-controls="dropdown-table-menu"
-                    >
-                      <span class="icon is-small">
-                        <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
-                      </span>
-                    </button>
-                  </div>
-                  <div
-                    class="dropdown-menu"
-                    id="dropdown-table-menu"
-                    role="menu"
+    <turbo-frame id="documents_table">
+      <div class="table-container">
+        <table class="table is-fullwidth is-hoverable is-narrow">
+          <thead>
+            <tr class="is-size-6">
+              <th>
+                <input type="checkbox" id="select-all-documents">
+              </th>
+              <th class="has-text-black" has-text-black>
+                <%= sort_link(@q, :title, "Назва") %>
+              </th>
+              <th class="has-text-black" has-text-black>
+                <%= sort_link(@q, :status, "Статус") %>
+              </th>
+              <th class="has-text-black" has-text-black>
+                <%= sort_link(@q, :author_name, "Автор") %>
+              </th>
+              <th class="has-text-black" has-text-black>
+                <%= sort_link(@q, :extracted_code, "ІПН") %>
+              </th>
+              <th class="has-text-black" has-text-black>
+                <%= sort_link(@q, :uploaded_by_name, "Завантажив") %>
+              </th>
+              <th class="has-text-black" has-text-black>
+                <%= sort_link(@q, :created_at, "Додано") %>
+              </th>
+              <th class="has-text-black" has-text-black>
+                <%= sort_link(@q, :signed_at, "Підписано") %>
+              </th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @documents.each do |doc| %>
+              <tr class="<%= 'has-background-warning-light' if doc.status == 'unlinked' %>">
+                <td>
+                  <input
+                    type="checkbox"
+                    class="document-checkbox"
+                    value="<%= doc.id %>"
                   >
-                    <div class="dropdown-content">
-                      <% if doc.file.attached? %>
-                        <%= link_to rails_blob_path(doc.file, disposition: "attachment"), class: "dropdown-item" do %>
-                          <span class="icon is-small">
-                            <i class="fas fa-download" aria-hidden="true"></i>
-                          </span>
-                          <span>Завантажити</span>
-                        <% end %>
-                      <% end %>
-
-                      <%= link_to edit_document_path(doc), class: "dropdown-item" do %>
-                        <span class="icon is-small">
-                          <i class="fas fa-edit" aria-hidden="true"></i>
-                        </span>
-                        <span>Редагувати</span>
-                      <% end %>
-
-                      <a
-                        href="#"
-                        class="dropdown-item"
-                        onclick="document.getElementById('delete-modal-<%= doc.id %>').classList.add('is-active')"
+                </td>
+                <td class="has-text-link">
+                  <%= link_to doc.file.filename, rails_blob_url(doc.file, disposition: 'attachment') if doc.file.attached? %>
+                </td>
+                <td>
+                  <span class="tag <%= status_tag_class(doc.status) %> has-text-dark"><%= doc.status_label %></span>
+                </td>
+                <td><%= doc.author&.name || "-" %></td>
+                <td><%= doc.extracted_code || "-" %></td>
+                <td><%= doc.uploaded_by&.name || "-" %></td>
+                <td><%= doc.created_at.strftime("%Y/%m/%d") %></td>
+                <td><%= doc.signed_at&.strftime("%Y/%m/%d") || "-" %></td>
+                <td>
+                  <div class="dropdown dropdown-table is-right">
+                    <div class="dropdown-trigger">
+                      <button
+                        class="button is-small"
+                        aria-haspopup="true"
+                        aria-controls="dropdown-table-menu"
                       >
                         <span class="icon is-small">
-                          <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                          <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
                         </span>
-                        <span>Видалити</span>
-                      </a>
+                      </button>
+                    </div>
+                    <div
+                      class="dropdown-menu"
+                      id="dropdown-table-menu"
+                      role="menu"
+                    >
+                      <div class="dropdown-content">
+                        <% if doc.file.attached? %>
+                          <%= link_to rails_blob_path(doc.file, disposition: "attachment"), class: "dropdown-item" do %>
+                            <span class="icon is-small">
+                              <i class="fas fa-download" aria-hidden="true"></i>
+                            </span>
+                            <span>Завантажити</span>
+                          <% end %>
+                        <% end %>
+
+                        <%= link_to edit_document_path(doc), class: "dropdown-item" do %>
+                          <span class="icon is-small">
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                          </span>
+                          <span>Редагувати</span>
+                        <% end %>
+
+                        <a
+                          href="#"
+                          class="dropdown-item"
+                          onclick="document.getElementById('delete-modal-<%= doc.id %>').classList.add('is-active')"
+                        >
+                          <span class="icon is-small">
+                            <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                          </span>
+                          <span>Видалити</span>
+                        </a>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div id="delete-modal-<%= doc.id %>" class="modal">
-                  <div class="modal-background"></div>
-                  <div class="modal-card">
-                    <header class="modal-card-head">
-                      <p class="modal-card-title">
-                        Підтвердіть видалення файла
-                      </p>
-                      <button
-                        class="delete"
-                        aria-label="Submit document deletion and close"
-                        onclick="this.closest('.modal').classList.remove('is-active')"
-                      ></button>
-                    </header>
+                  <div id="delete-modal-<%= doc.id %>" class="modal">
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                      <header class="modal-card-head">
+                        <p class="modal-card-title">
+                          Підтвердіть видалення файла
+                        </p>
+                        <button
+                          class="delete"
+                          aria-label="Submit document deletion and close"
+                          onclick="this.closest('.modal').classList.remove('is-active')"
+                        ></button>
+                      </header>
 
-                    <section class="modal-card-body">
-                      Ви впевнені, що хочете видалити документ
-                      <strong><%= doc.title %></strong>
-                      ?
-                    </section>
+                      <section class="modal-card-body">
+                        Ви впевнені, що хочете видалити документ
+                        <strong><%= doc.title %></strong>
+                        ?
+                      </section>
 
-                    <footer class="modal-card-foot">
-                      <div class="buttons">
-                        <%= button_to "Так, видалити",
+                      <footer class="modal-card-foot">
+                        <div class="buttons">
+                          <%= button_to "Так, видалити",
                       document_path(doc),
                       method: :delete,
                       class: "button is-danger" %>
-                        <button
-                          class="button"
-                          onclick="this.closest('.modal').classList.remove('is-active')"
-                        >
-                          Скасувати
-                        </button>
-                      </div>
-                    </footer>
+                          <button
+                            class="button"
+                            onclick="this.closest('.modal').classList.remove('is-active')"
+                          >
+                            Скасувати
+                          </button>
+                        </div>
+                      </footer>
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <% if @pagy.pages > 1 %>
+        <%== pagy_nav(@pagy) %>
+      <% end %>
+    </turbo-frame>
   </div>
 </div>

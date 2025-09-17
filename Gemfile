@@ -74,3 +74,5 @@ gem "paper_trail"
 gem "faraday"
 gem "pg", "~> 1.6", ">= 1.6.2"
 gem "dotenv-rails", "~> 3.1", ">= 3.1.8", groups: [ :development, :test ]
+gem "pagy", "~> 9.4"
+gem "ransack", github: "activerecord-hackery/ransack", branch: "main"

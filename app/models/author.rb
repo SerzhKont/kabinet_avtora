@@ -8,4 +8,12 @@ class Author < ApplicationRecord
     regenerate_access_token  # Из has_secure_token
     update!(access_token_expires_at: days.days.from_now)
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    %w[ code email_address name ]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[documents]
+  end
 end
