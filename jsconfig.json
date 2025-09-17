@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "checkJs": false,
+    "module": "ESNext",
+    "target": "ES6",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "strict": false,
+    "noEmit": true,
+    "lib": [
+      "esnext",
+      "dom"
+    ]
+  },
+  "include": [
+    "app/javascript/**/*.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "vendor",
+    "tmp",
+    "public",
+    "app/assets",
+    "test",
+    "spec"
+  ]
+}
