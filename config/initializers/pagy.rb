@@ -121,7 +121,7 @@
 # See https://ddnexus.github.io/pagy/docs/extras/bulma
 require "pagy/extras/bulma"
 Pagy::DEFAULT[:nav_templates] = { default: "pagy/nav" }
-Pagy::DEFAULT[:limit] = 20
+Pagy::DEFAULT[:limit] = 25
 
 # Pagy extra: Add the pagy styled versions of the javascript-powered navs
 # and a few other components to the Pagy::Frontend module.

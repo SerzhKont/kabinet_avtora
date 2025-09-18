@@ -1,6 +1,6 @@
 <nav class="pagination" role="navigation" aria-label="Pagination">
-  <%= link_to "Попередня", pagy_url_for(pagy, pagy.prev), class: "pagination-previous #{'is-disabled' unless pagy.prev}" %>
-  <%= link_to "Наступна", pagy_url_for(pagy, pagy.next), class: "pagination-next #{'is-disabled' unless pagy.next}" %>
+  <%= link_to "Попередня", pagy_url_for(pagy, pagy.prev), class: "pagination-previous #{'is-disabled' unless pagy.prev}", data: { turbo_frame: "documents_table" } %>
+  <%= link_to "Наступна", pagy_url_for(pagy, pagy.next), class: "pagination-next #{'is-disabled' unless pagy.next}", data: { turbo_frame: "documents_table" } %>
   <ul class="pagination-list">
     <% pagy.series.each do |item| %>
       <li>
@@ -9,7 +9,7 @@
         <% elsif item == pagy.page.to_s %>
           <a class="pagination-link is-current" href="#"><%= item %></a>
         <% else %>
-          <%= link_to item, pagy_url_for(pagy, item), class: 'pagination-link' %>
+          <%= link_to item, pagy_url_for(pagy, item), class: 'pagination-link', data: { turbo_frame: "documents_table" } %>
         <% end %>
       </li>
     <% end %>

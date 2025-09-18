@@ -1,9 +1,11 @@
-<div class="dropdown">
+<div class="dropdown sidebar-menu-dropdown" data-controller="dropdown">
   <div class="dropdown-trigger">
     <button
       class="button is-fullwidth"
       aria-haspopup="true"
       aria-controls="dropdown-menu"
+      data-dropdown-target="dropdownMenu"
+      data-action="click->dropdown#toggle"
     >
       <span>Розділи</span>
       <span class="icon is-small">

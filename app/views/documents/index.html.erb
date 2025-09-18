@@ -2,13 +2,13 @@
   <div class="column is-narrow has-border-right">
     <%= render "layouts/sidebar" %>
   </div>
-  <div class="column is-10">
+  <div class="column is-10" data-controller="checkbox">
     <nav class="level">
       <div class="level-left">
         <div class="level-item">
           <%= search_form_for @q, class: "field has-addons" do |f| %>
             <p class="control has-icons-left">
-              <%= f.search_field :title_or_extracted_code_cont,
+              <%= f.search_field :author_name_or_extracted_code_cont,
                                 class: "input", 
                                 placeholder: "Знайти по автору або ІПН" %>
               <span class="icon is-small is-left">
@@ -41,7 +41,7 @@
       </div>
     </nav>
 
-    <nav class="level">
+    <nav class="level is-align-items-baseline">
       <div class="level-left is-align-items-baseline">
         <div class="level-item">
           <div class="buttons has-addons mb-4">
@@ -56,18 +56,30 @@
                         class: "button is-small #{"is-danger is-selected" if params[:status] == "unlinked"}" %>
           </div>
         </div>
-      </div>
-      <div class="level-right">
         <div class="level-item">
           <p class="subtitle is-6">
-            Документів обрано:
-            <strong><span id="selected-count" data-checkbox-target="selectedCount">0</span></strong>
+            <span class="tag is-info is-light">
+              Документів обрано:
+              <strong><span id="selected-count" data-checkbox-target="selectedCount">0</span></strong>
+            </span>
+          </p>
+        </div>
+      </div>
+      <div class="level-right is-align-items-baseline">
+        <div class="level-item">
+          <p class="subtitle is-6">
+            Документів на сторінці:&nbsp;
+            <%= form_with url: documents_path, method: :get, local: true, data: { turbo_frame: "documents_table" } do %>
+              <div class="select">
+                <%= select_tag :items, options_for_select([ 25, 50, 100, 200, 500 ], params[:items]&.to_i || 25), onchange: "this.form.submit()", class: "select" %>
+              </div>
+            <% end %>
           </p>
         </div>
       </div>
     </nav>
 
-    <turbo-frame id="documents_table" data-controller="checkbox">
+    <turbo-frame id="documents_table">
       <div class="table-container">
         <table class="table is-fullwidth is-hoverable is-narrow">
           <thead>
@@ -80,28 +92,28 @@
                   data-action="change->checkbox#toggleAll"
                 >
               </th>
-              <th class="has-text-black" has-text-black>
-                <%= sort_link(@q, :title, "Назва") %>
+              <th>
+                <%= sort_link(@q, :title, "Назва", class: "has-text-black") %>
               </th>
-              <th class="has-text-black" has-text-black>
-                <%= sort_link(@q, :status, "Статус") %>
+              <th>
+                <%= sort_link(@q, :status, "Статус", class: "has-text-black") %>
               </th>
-              <th class="has-text-black" has-text-black>
-                <%= sort_link(@q, :author_name, "Автор") %>
+              <th>
+                <%= sort_link(@q, :author_name, "Автор", class: "has-text-black") %>
               </th>
-              <th class="has-text-black" has-text-black>
-                <%= sort_link(@q, :extracted_code, "ІПН") %>
+              <th>
+                <%= sort_link(@q, :extracted_code, "ІПН", class: "has-text-black") %>
               </th>
-              <th class="has-text-black" has-text-black>
-                <%= sort_link(@q, :uploaded_by_name, "Завантажив") %>
+              <th>
+                <%= sort_link(@q, :uploaded_by_name, "Завантажив", class: "has-text-black") %>
               </th>
-              <th class="has-text-black" has-text-black>
-                <%= sort_link(@q, :created_at, "Додано") %>
+              <th>
+                <%= sort_link(@q, :created_at, "Додано", class: "has-text-black") %>
               </th>
-              <th class="has-text-black" has-text-black>
-                <%= sort_link(@q, :signed_at, "Підписано") %>
+              <th>
+                <%= sort_link(@q, :signed_at, "Підписано", class: "has-text-black") %>
               </th>
-              <th></th>
+              <th>Дії</th>
             </tr>
           </thead>
           <tbody>
@@ -128,57 +140,32 @@
                 <td><%= doc.created_at.strftime("%Y/%m/%d") %></td>
                 <td><%= doc.signed_at&.strftime("%Y/%m/%d") || "-" %></td>
                 <td>
-                  <div
-                    class="dropdown dropdown-table is-right"
-                    data-controller="dropdown"
-                  >
-                    <div class="dropdown-trigger">
-                      <button
-                        class="button is-small"
-                        aria-haspopup="true"
-                        aria-controls="dropdown-table-menu"
-                        data-action="click->dropdown#toggle"
-                      >
-                        <span class="icon is-small">
-                          <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
-                        </span>
-                      </button>
-                    </div>
-                    <div
-                      class="dropdown-menu"
-                      id="dropdown-table-menu"
-                      role="menu"
-                      data-dropdown-target="menu"
-                    >
-                      <div class="dropdown-content">
+                  <div class="level mt-0 mb-0">
+                    <div class="level-left">
+                      <div class="level-left">
                         <% if doc.file.attached? %>
-                          <%= link_to rails_blob_path(doc.file, disposition: "attachment"), class: "dropdown-item" do %>
+                          <%= link_to rails_blob_path(doc.file, disposition: "attachment"), class: "has-text-dark", title: "Завантажити" do %>
                             <span class="icon is-small">
                               <i class="fas fa-download" aria-hidden="true"></i>
                             </span>
-                            <span>Завантажити</span>
                           <% end %>
                         <% end %>
+                      </div>
 
-                        <%= link_to edit_document_path(doc), class: "dropdown-item" do %>
+                      <div class="level-left">
+                        <%= link_to edit_document_path(doc), class: "has-text-dark", title: "Редагувати" do %>
                           <span class="icon is-small">
                             <i class="fas fa-edit" aria-hidden="true"></i>
                           </span>
-                          <span>Редагувати</span>
                         <% end %>
+                      </div>
 
-                        <a
-                          href="#"
-                          class="dropdown-item"
-                          data-controller="modal"
-                          data-action="click->modal#open"
-                          data-modal-id="delete-modal-<%= doc.id %>"
-                        >
+                      <div class="level-left">
+                        <%= link_to "#", class: "has-text-dark", title: "Видалити", data: { controller: "modal", action: "click->modal#open", modal_id: "delete-modal-#{doc.id}" } do %>
                           <span class="icon is-small">
                             <i class="fas fa-trash-alt" aria-hidden="true"></i>
                           </span>
-                          <span>Видалити</span>
-                        </a>
+                        <% end %>
                       </div>
                     </div>
                   </div>
@@ -232,8 +219,13 @@
           </tbody>
         </table>
       </div>
-      <% if @pagy.pages > 1 %>
-        <%== pagy_nav(@pagy) %>
+
+      <% if @documents.empty? %>
+        <p>Документи не знайдено.</p>
+      <% else %>
+        <% if @pagy.pages > 1 %>
+          <%== pagy_nav(@pagy) %>
+        <% end %>
       <% end %>
     </turbo-frame>
   </div>

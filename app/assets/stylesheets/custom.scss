@@ -3,11 +3,7 @@
 }
 
 .dropdown {
-  display: none;
-}
-
-.dropdown-table {
-  display: inline-block;
+  display: none
 }
 
 .has-shadow-strong {
@@ -42,6 +38,10 @@
   background-color: #276cda;
 }
 
+th a.sort_link:hover {
+  text-decoration: underline;
+}
+
 @media screen and (max-width: 768px) {
   .menu {
     display: none;
@@ -55,10 +55,5 @@
 
   .dropdown-menu {
     width: 100%;
-  }
-
-  .dropdown-table {
-    width: 100%;
-    text-align: center;
   }
 }

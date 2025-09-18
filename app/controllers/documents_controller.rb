@@ -1,6 +1,5 @@
 class DocumentsController < ApplicationController
   include Pagy::Backend
-  include Pagy::Frontend
 
   before_action :authenticate_user!, only: [ :author_index, :sign_one, :sign_all ]
   before_action :ensure_manager, only: [ :edit, :update ]
@@ -41,7 +40,9 @@ class DocumentsController < ApplicationController
   def index
     @q = Document.ransack(params[:q])
     scope = params[:status].present? ? Document.where(status: params[:status]) : Document.all
-    @pagy, @documents = pagy(@q.result(distinct: true).merge(scope).includes(:author, :uploaded_by))
+    items_per_page = params[:items]&.to_i || 25
+    items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
+    @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
   end
 
   def show
