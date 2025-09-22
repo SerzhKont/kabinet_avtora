@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   resource :session, only: [ :new, :create, :destroy ]
-  resources :documents
+  resources :documents, only: [ :index, :show, :new, :create, :edit, :update, :destroy ] do
+    collection do
+      delete :bulk_delete
+    end
+  end
   resources :authors
   root "documents#index"
   resources :passwords, param: :token

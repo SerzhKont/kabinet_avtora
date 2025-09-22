@@ -5,7 +5,7 @@ class Document < ApplicationRecord
 
   has_one_attached :file
 
-  enum :status, { pending: "pending", signed: "signed", rejected: "rejected", linked: "linked", unlinked: "unlinked" }, default: "linked"
+  enum :status, { pending: "pending", signed: "signed", rejected: "rejected", linked: "linked", unlinked: "unlinked" }
 
   STATUS_LABELS = {
     "linked"   => "Новий",
@@ -19,12 +19,13 @@ class Document < ApplicationRecord
     STATUS_LABELS[status] || status.humanize
   end
 
+  before_validation :extract_metadata, if: -> { file.attached? }
   validates :title, presence: true
-  validates :file, presence: true
+  validates :file, presence: true, on: :create
   validates :uploaded_by, presence: true
   validate :check_file_size
 
-  before_validation :extract_metadata, if: -> { file.attached? }
+   before_save :update_extracted_code_from_author
   # before_save :generate_file_hash, if: -> { file.attached? && file.changed? }
 
   # Allow searching/sorting on these attributes
@@ -38,6 +39,12 @@ class Document < ApplicationRecord
   end
 
   private
+
+  def update_extracted_code_from_author
+    if author_id_changed? || (author.present? && extracted_code != author.code.to_s)
+      self.extracted_code = author&.code.to_s
+    end
+  end
 
   def extract_metadata
     filename = file.filename.to_s

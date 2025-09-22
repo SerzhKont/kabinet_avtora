@@ -62,15 +62,15 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address: "smtp.office365.com",
     port: 587,
-    domain: "yourdomain.com",  # Замени на свой домен
-    user_name: ENV["AZURE_EMAIL_USER"],
-    password: ENV["AZURE_EMAIL_PASS"],
+    domain: "expertus.media",
+    user_name: Rails.application.credentials.mail.smtp_username,
+    password: Rails.application.credentials.mail.smtp_password,
     authentication: "login",
     enable_starttls_auto: true
   }
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.default_url_options = { host: "yourapp.azurewebsites.net" }  # Azure domain
+  config.action_mailer.default_url_options = { host: "expertus.media" }  # Azure domain
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {

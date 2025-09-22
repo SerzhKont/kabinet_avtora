@@ -32,7 +32,7 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  # config.action_mailer.raise_delivery_errors = false
 
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
@@ -40,9 +40,22 @@ Rails.application.configure do
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
-  config.action_mailer.delivery_method = :letter_opener  # Для dev — письма в браузере
+  # config.action_mailer.delivery_method = :letter_opener  # Для dev — письма в браузере
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
+
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address: "smtp.office365.com",
+    port: 587,
+    domain: "expertus.media",
+    user_name: Rails.application.credentials.mail.smtp_username,
+    password: Rails.application.credentials.mail.smtp_password,
+    authentication: "login",
+    enable_starttls_auto: true,
+    open_timeout:         10,  # Время ожидания соединения (секунды)
+    read_timeout:         30   # Время ожидания ответа (секунды)
+  }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

@@ -4,6 +4,10 @@ class Author < ApplicationRecord
   validates :name, presence: true
   has_many :documents, dependent: :destroy
 
+  def self.find_by_code_or_name(query)
+    where("code::text ILIKE ? OR name ILIKE ?", "%#{query}%", "%#{query}%")
+  end
+
   def regenerate_access_token_with_expiry(days = 7)
     regenerate_access_token  # Из has_secure_token
     update!(access_token_expires_at: days.days.from_now)

@@ -3,6 +3,11 @@
     <%= render "layouts/sidebar" %>
   </div>
   <div class="column is-10" data-controller="checkbox">
+    <div id="notifications">
+      <%= render partial: "layouts/notice", locals: { notice: notice } %>
+      <%= render partial: "layouts/alert", locals: { alert: alert } %>
+    </div>
+
     <nav class="level">
       <div class="level-left">
         <div class="level-item">
@@ -38,6 +43,67 @@
           </span>
           <span>Відправити на підпис</span>
         </button>
+
+        <button
+          class="button is-danger"
+          id="delete-selected-documents"
+          data-checkbox-target="deleteButton"
+          data-action="click->checkbox#showDeleteModal"
+          disabled
+        >
+          <span class="icon is-small">
+            <i class="fas fa-trash"></i>
+          </span>
+          <span>Видалити обрані</span>
+        </button>
+
+        <div
+          id="bulk-delete-modal"
+          class="modal"
+          data-controller="modal"
+          data-checkbox-target="deleteModal"
+        >
+          <div class="modal-background" data-action="click->modal#close"></div>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title">
+                Підтвердіть масове видалення
+              </p>
+              <button
+                class="delete"
+                aria-label="Close"
+                data-action="click->modal#close"
+              ></button>
+            </header>
+
+            <section class="modal-card-body">
+              <p>
+                Ви впевнені, що хочете видалити
+                <strong><span id="delete-count" data-checkbox-target="deleteCount">0</span></strong>
+                обраних документів?
+              </p>
+              <p class="has-text-danger mt-3">Цю дію не можна скасувати!</p>
+            </section>
+
+            <footer class="modal-card-foot">
+              <div class="buttons">
+                <%= form_with url: bulk_delete_documents_path, method: :delete, id: "bulk-delete-form", data: { turbo_frame: "documents_table" } do %>
+                  <button
+                    type="submit"
+                    id="confirm-bulk-delete"
+                    class="button is-danger"
+                    data-action="click->checkbox#confirmBulkDelete"
+                  >
+                    Так, видалити
+                  </button>
+                <% end %>
+                <button class="button" data-action="click->modal#close">
+                  Скасувати
+                </button>
+              </div>
+            </footer>
+          </div>
+        </div>
       </div>
     </nav>
 
@@ -79,154 +145,6 @@
       </div>
     </nav>
 
-    <turbo-frame id="documents_table">
-      <div class="table-container">
-        <table class="table is-fullwidth is-hoverable is-narrow">
-          <thead>
-            <tr class="is-size-6">
-              <th>
-                <input
-                  type="checkbox"
-                  id="select-all-documents"
-                  data-checkbox-target="selectAll"
-                  data-action="change->checkbox#toggleAll"
-                >
-              </th>
-              <th>
-                <%= sort_link(@q, :title, "Назва", class: "has-text-black") %>
-              </th>
-              <th>
-                <%= sort_link(@q, :status, "Статус", class: "has-text-black") %>
-              </th>
-              <th>
-                <%= sort_link(@q, :author_name, "Автор", class: "has-text-black") %>
-              </th>
-              <th>
-                <%= sort_link(@q, :extracted_code, "ІПН", class: "has-text-black") %>
-              </th>
-              <th>
-                <%= sort_link(@q, :uploaded_by_name, "Завантажив", class: "has-text-black") %>
-              </th>
-              <th>
-                <%= sort_link(@q, :created_at, "Додано", class: "has-text-black") %>
-              </th>
-              <th>
-                <%= sort_link(@q, :signed_at, "Підписано", class: "has-text-black") %>
-              </th>
-              <th>Дії</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @documents.each do |doc| %>
-              <tr class="<%= 'has-background-warning-light' if doc.status == 'unlinked' %>">
-                <td>
-                  <input
-                    type="checkbox"
-                    class="document-checkbox"
-                    value="<%= doc.id %>"
-                    data-checkbox-target="checkbox"
-                    data-action="change->checkbox#toggleCheckbox"
-                  >
-                </td>
-                <td>
-                  <%= link_to doc.file.filename, rails_blob_url(doc.file, disposition: 'attachment') if doc.file.attached? %>
-                </td>
-                <td>
-                  <span class="tag <%= status_tag_class(doc.status) %> has-text-dark"><%= doc.status_label %></span>
-                </td>
-                <td><%= doc.author&.name || "-" %></td>
-                <td><%= doc.extracted_code || "-" %></td>
-                <td><%= doc.uploaded_by&.name || "-" %></td>
-                <td><%= doc.created_at.strftime("%Y/%m/%d") %></td>
-                <td><%= doc.signed_at&.strftime("%Y/%m/%d") || "-" %></td>
-                <td>
-                  <div class="level mt-0 mb-0">
-                    <div class="level-left">
-                      <div class="level-left">
-                        <% if doc.file.attached? %>
-                          <%= link_to rails_blob_path(doc.file, disposition: "attachment"), class: "has-text-dark", title: "Завантажити" do %>
-                            <span class="icon is-small">
-                              <i class="fas fa-download" aria-hidden="true"></i>
-                            </span>
-                          <% end %>
-                        <% end %>
-                      </div>
-
-                      <div class="level-left">
-                        <%= link_to edit_document_path(doc), class: "has-text-dark", title: "Редагувати" do %>
-                          <span class="icon is-small">
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                          </span>
-                        <% end %>
-                      </div>
-
-                      <div class="level-left">
-                        <%= link_to "#", class: "has-text-dark", title: "Видалити", data: { controller: "modal", action: "click->modal#open", modal_id: "delete-modal-#{doc.id}" } do %>
-                          <span class="icon is-small">
-                            <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                          </span>
-                        <% end %>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    id="delete-modal-<%= doc.id %>"
-                    class="modal"
-                    data-controller="modal"
-                  >
-                    <div
-                      class="modal-background"
-                      data-action="click->modal#close"
-                    ></div>
-                    <div class="modal-card">
-                      <header class="modal-card-head">
-                        <p class="modal-card-title">
-                          Підтвердіть видалення файла
-                        </p>
-                        <button
-                          class="delete"
-                          aria-label="Submit document deletion and close"
-                          data-action="click->modal#close"
-                        ></button>
-                      </header>
-
-                      <section class="modal-card-body">
-                        Ви впевнені, що хочете видалити документ
-                        <strong><%= doc.title %></strong>
-                        ?
-                      </section>
-
-                      <footer class="modal-card-foot">
-                        <div class="buttons">
-                          <%= button_to "Так, видалити",
-                      document_path(doc),
-                      method: :delete,
-                      class: "button is-danger" %>
-                          <button
-                            class="button"
-                            data-action="click->modal#close"
-                          >
-                            Скасувати
-                          </button>
-                        </div>
-                      </footer>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
-
-      <% if @documents.empty? %>
-        <p>Документи не знайдено.</p>
-      <% else %>
-        <% if @pagy.pages > 1 %>
-          <%== pagy_nav(@pagy) %>
-        <% end %>
-      <% end %>
-    </turbo-frame>
+    <%= render partial: "table", locals: { documents: @documents, pagy: @pagy } %>
   </div>
 </div>

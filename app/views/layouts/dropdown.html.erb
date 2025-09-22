@@ -1,0 +1,29 @@
+<div class="dropdown sidebar-menu-dropdown" data-controller="dropdown">
+  <div class="dropdown-trigger">
+    <button
+      class="button is-fullwidth"
+      aria-haspopup="true"
+      aria-controls="dropdown-menu"
+      data-dropdown-target="dropdownMenu"
+      data-action="click->dropdown#toggle"
+    >
+      <span>Розділи</span>
+      <span class="icon is-small">
+        <i class="fas fa-angle-down" aria-hidden="true"></i>
+      </span>
+    </button>
+  </div>
+  <div class="dropdown-menu" id="dropdown-menu" role="menu">
+    <div class="dropdown-content">
+      <%= link_to "Документи",
+      documents_path,
+      class: ("dropdown-item #{"is-active" if current_page?(documents_path)}") %>
+      <%= link_to "Автори",
+      authors_path,
+      class: ("dropdown-item #{"is-active" if current_page?(authors_path)}") %>
+      <%= link_to "Налаштування",
+      new_document_path,
+      class: ("dropdown-item #{"is-active" if current_page?(new_document_path)}") %>
+    </div>
+  </div>
+</div>

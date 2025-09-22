@@ -2,9 +2,8 @@ class DocumentsController < ApplicationController
   include Pagy::Backend
 
   before_action :authenticate_user!, only: [ :author_index, :sign_one, :sign_all ]
-  before_action :ensure_manager, only: [ :edit, :update ]
+  before_action :ensure_manager, only: [ :edit, :update, :destroy, :bulk_delete ]
   before_action :set_document, only: [ :show, :edit, :update, :destroy ]
-
 
   def author_index
     @author = Author.find_by(code: params[:author_code])
@@ -67,14 +66,17 @@ class DocumentsController < ApplicationController
   end
 
   def edit
-    @document = Document.find(params[:id])
+    render template: "documents/edit"
   end
 
   def update
     @document = Document.find(params[:id])
     if @document.update(document_params)
-      @document.update(status: "linked") if @document.author_id.present? && @document.status == "unlinked"
-      redirect_to @document, notice: "Документ успешно обновлен."
+      new_status = @document.author_id.present? ? "linked" : "unlinked"
+      @document.update(status: new_status)
+      redirect_to documents_path,
+                  notice: "Документ '#{@document.title}' успішно оновлено. " +
+                          (@document.author ? "Прив'язано до автора: #{@document.author.name}" : "Автора видалено")
     else
       render :edit, status: :unprocessable_entity
     end
@@ -83,6 +85,29 @@ class DocumentsController < ApplicationController
   def destroy
     @document.destroy
     redirect_to documents_path, notice: "Документ удалён."
+  end
+
+  def bulk_delete
+    if params[:document_ids].present?
+      Document.where(id: params[:document_ids]).destroy_all
+      respond_to do |format|
+        format.html { redirect_to documents_path, notice: "Вибрані документи видалено." }
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("documents_table", partial: "documents/table", locals: { documents: Document.all, pagy: nil }),
+            turbo_stream.update("notifications", partial: "shared/notice", locals: { notice: "Вибрані документи видалено." }),
+            turbo_stream.append("body", "<script>document.querySelector('[data-controller=\"checkbox\"]').checkboxController.resetCheckboxes()</script>")
+          ]
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to documents_path, alert: "Оберіть хоча б один документ для видалення." }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.update("notifications", partial: "shared/alert", locals: { alert: "Оберіть хоча б один документ для видалення." })
+        end
+      end
+    end
   end
 
   def unlinked
@@ -96,10 +121,13 @@ class DocumentsController < ApplicationController
   end
 
   def document_params
-    params.require(:document).permit(:title, :author_id, :status, :file)
+    params.require(:document).permit(:author_id, :title, :status)
   end
 
   def ensure_manager
-    redirect_to root_path, alert: "Доступ запрещен." unless current_user.manager? || current_user.admin?
+    unless current_user && (current_user.manager? || current_user.admin?)
+      redirect_to root_path, alert: "Доступ запрещен."
+      false
+    end
   end
 end

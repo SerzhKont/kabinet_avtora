@@ -1,20 +1,81 @@
-<%= form_with model: @document, local: true do |form| %>
-  <div>
-    <%= form.label :title %>
-    <%= form.text_field :title %>
+<div class="container">
+  <h1 class="title">Редагування документа</h1>
+
+  <div class="box">
+    <h2 class="subtitle">Інформація про документ</h2>
+    <div class="content">
+      <ul>
+        <li><strong>Назва:</strong><%= @document.title %></li>
+        <li><strong>Код з файлу:</strong><%= @document.extracted_code %></li>
+        <li>
+          <strong>Статус:</strong>
+          <span class="tag <%= @document.status == 'linked' ? 'is-success' : 'is-warning' %>">
+            <%= @document.status_label %>
+          </span>
+        </li>
+        <li>
+          <strong>Завантажено:</strong>
+          <%= l(@document.created_at, format: :long) %>
+        </li>
+        <li><strong>Завантажив:</strong><%= @document.uploaded_by.name %></li>
+      </ul>
+    </div>
   </div>
-  <div>
-    <%= form.label :author_id, "Автор" %>
-    <%= form.collection_select :author_id,
-                           Author.all,
-                           :id,
-                           :name,
-                           include_blank: "Выберите автора" %>
+
+  <div class="box">
+    <h2 class="subtitle">Прив'язка до автора</h2>
+
+    <%= form_with(model: @document, local: true) do |form| %>
+      <% if @document.errors.any? %>
+        <div class="notification is-danger">
+          <h2 class="subtitle">
+            <%= pluralize(@document.errors.count, "помилка") %>:
+          </h2>
+          <ul>
+            <% @document.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="field">
+        <%= form.label :author_id, 'Автор', class: 'label' %>
+        <div class="control">
+          <div class="select is-fullwidth">
+            <%= form.collection_select :author_id, 
+                  Author.all.order(:name), 
+                  :id, 
+                  ->(author) { "#{author.name} (код: #{author.code})" }, 
+                  { include_blank: '-- Не обрано --' }, 
+                  { class: 'select' } %>
+          </div>
+        </div>
+
+        <p class="help">Оберіть автора для прив'язки документа</p>
+      </div>
+
+      <div class="field is-grouped">
+        <div class="control">
+          <%= form.submit 'Зберегти', class: 'button is-primary' %>
+        </div>
+        <div class="control">
+          <%= link_to 'Скасувати', documents_path, class: 'button is-light' %>
+        </div>
+      </div>
+    <% end %>
   </div>
-  <div>
-    <%= form.label :status %>
-    <%= form.select :status,
-                Document.statuses.keys.map { |s| [Document::STATUS_LABELS[s], s] } %>
-  </div>
-  <%= form.submit "Обновить документ" %>
-<% end %>
+
+  <% if @document.author.present? %>
+    <div class="box">
+      <h2 class="subtitle">Поточний автор</h2>
+      <div class="content">
+        <p><strong>Ім'я:</strong><%= @document.author.name %></p>
+
+        <p><strong>Код:</strong><%= @document.author.code %></p>
+
+        <p><strong>Email:</strong><%= @document.author.email_address %></p>
+      </div>
+    </div>
+  <% end %>
+</div>
