@@ -44,17 +44,10 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
 
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    address: "smtp.office365.com",
-    port: 587,
-    domain: "expertus.media",
-    user_name: Rails.application.credentials.mail.smtp_username,
-    password: Rails.application.credentials.mail.smtp_password,
-    authentication: "login",
-    enable_starttls_auto: true,
-    open_timeout:         10,  # Время ожидания соединения (секунды)
-    read_timeout:         30   # Время ожидания ответа (секунды)
+  config.action_mailer.delivery_method = :azure_communication_email
+  config.action_mailer.azure_communication_email_settings = {
+    endpoint:   Rails.application.credentials.mail.asc_email_endpoint,
+    access_key: Rails.application.credentials.mail.asc_email_access_key
   }
 
   # Print deprecation notices to the Rails logger.
