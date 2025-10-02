@@ -1,24 +1,24 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  open(event) {
-    event.preventDefault();
-    const modalId = event.currentTarget.dataset.modalId;
-    const modal = document.getElementById(modalId);
-    if (modal) {
-      modal.classList.add("is-active");
-    }
-    const dropdown = this.element.closest(".dropdown");
-    if (dropdown) {
-      dropdown.classList.remove("is-active");
-    }
-  }
+  static targets = ["modal"];
 
   close(event) {
     event.preventDefault();
-    const modal = this.element.closest(".modal");
-    if (modal) {
-      modal.classList.remove("is-active");
+    this.hideModal();
+  }
+
+  hideModal() {
+    if (this.hasModalTarget) {
+      this.modalTarget.classList.remove("is-active");
+
+      // Очищаем только модалку (для отмены), не трогаем таблицу
+      const modalFrame = this.modalTarget.closest(
+        "turbo-frame[data-id='modal']",
+      );
+      if (modalFrame) {
+        modalFrame.innerHTML = "";
+      }
     }
   }
 }

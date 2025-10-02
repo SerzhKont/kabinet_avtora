@@ -1,5 +1,6 @@
-<turbo-frame id="documents_table">
+<%= turbo_frame_tag "documents_table" do %>
   <div class="table-container">
+    <%= turbo_frame_tag "modal" %>
     <table class="table is-fullwidth is-hoverable is-narrow">
       <thead>
         <tr class="is-size-6">
@@ -37,16 +38,12 @@
       </thead>
       <tbody>
         <% documents.each do |doc| %>
-          <tr class="<%= 'has-background-warning-light' if doc.status == 'unlinked' %>">
+          <tr
+            id="document_<%= doc.id %>"
+            class="<%= 'has-background-warning-light' if doc.status == 'unlinked' %>"
+          >
             <td>
-              <input
-                type="checkbox"
-                class="document-checkbox"
-                name="document_ids[]"
-                value="<%= doc.id %>"
-                data-checkbox-target="checkbox"
-                data-action="change->checkbox#toggleCheckbox"
-              >
+              <%= check_box_tag "document_ids[]", doc.id, false, class: "document-checkbox" %>
             </td>
             <td>
               <%= link_to doc.file.filename, rails_blob_url(doc.file, disposition: 'attachment') if doc.file.attached? %>
@@ -81,15 +78,17 @@
                   </div>
 
                   <div class="level-left">
-                    <%= link_to "#", class: "has-text-dark", title: "Видалити",
-                      data: { 
-                        controller: "modal",
-                        action: "click->modal#open",
-                        modal_id: "delete-modal-#{doc.id}" } do %>
+                    <%= link_to confirm_destroy_document_path(doc), 
+                      class: "has-text-dark", 
+                      title: "Видалити",
+                      data: { turbo_frame: "modal" } do %>
                       <span class="icon is-small">
-                        <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                        <i class="fas fa-trash" aria-hidden="true"></i>
                       </span>
                     <% end %>
+                  </div>
+
+                  <div class="level-left">
                     <% if doc.status == 'unlinked' %>
                       <%= link_to edit_document_path(doc), 
                         class: "button is-warning is-small", 
@@ -104,44 +103,13 @@
                   </div>
                 </div>
               </div>
-              <div
-                id="delete-modal-<%= doc.id %>"
-                class="modal"
-                data-controller="modal"
-              >
-                <div class="modal-background" data-action="click->modal#close"></div>
-                <div class="modal-card">
-                  <header class="modal-card-head">
-                    <p class="modal-card-title">Підтвердіть видалення файла</p>
-                    <button
-                      class="delete"
-                      aria-label="Submit document deletion and close"
-                      data-action="click->modal#close"
-                    ></button>
-                  </header>
-
-                  <section class="modal-card-body">
-                    Ви впевнені, що хочете видалити документ
-                    <strong><%= doc.title %></strong>
-                    ?
-                  </section>
-
-                  <footer class="modal-card-foot">
-                    <div class="buttons">
-                      <%= button_to "Так, видалити", document_path(doc), method: :delete, class: "button is-danger" %>
-                      <button class="button" data-action="click->modal#close">
-                        Скасувати
-                      </button>
-                    </div>
-                  </footer>
-                </div>
-              </div>
             </td>
           </tr>
         <% end %>
       </tbody>
     </table>
   </div>
+
   <% if documents.empty? %>
     <p>Документи не знайдено.</p>
   <% else %>
@@ -149,4 +117,4 @@
       <%== pagy_nav(pagy) %>
     <% end %>
   <% end %>
-</turbo-frame>
+<% end %>

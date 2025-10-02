@@ -3,7 +3,7 @@ class DocumentsController < ApplicationController
 
   before_action :authenticate_user!, only: [ :author_index, :sign_one, :sign_all ]
   before_action :ensure_manager, only: [ :edit, :update, :destroy, :bulk_delete ]
-  before_action :set_document, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_document, only: [ :show, :edit, :update, :destroy, :confirm_destroy ]
 
   def author_index
     @author = Author.find_by(code: params[:author_code])
@@ -82,9 +82,30 @@ class DocumentsController < ApplicationController
     end
   end
 
+  def confirm_destroy
+    render template: "documents/confirm_destroy"
+  end
+
   def destroy
     @document.destroy
-    redirect_to documents_path, notice: "Документ удалён."
+
+    @q = Document.ransack(params[:q])
+    scope = params[:status].present? ? Document.where(status: params[:status]) : Document.all
+    items_per_page = params[:items]&.to_i || 25
+    items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
+    @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
+
+    respond_to do |format|
+      format.turbo_stream do
+        # Заменяем всю таблицу новым partial
+        render turbo_stream: turbo_stream.replace(
+          "documents_table",
+          partial: "documents/table",
+          locals: { documents: @documents, pagy: @pagy }
+        )
+      end
+      format.html { redirect_to documents_path, notice: "Документ успішно видалено!" }
+    end
   end
 
   def bulk_delete
