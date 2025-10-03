@@ -4,7 +4,8 @@ Rails.application.routes.draw do
   resource :session, only: [ :new, :create, :destroy ]
   resources :documents, only: [ :index, :show, :new, :create, :edit, :update, :destroy ] do
     collection do
-      delete :bulk_delete
+      post :bulk_action
+      get :confirm_bulk_destroy
     end
     member do
       get :confirm_destroy

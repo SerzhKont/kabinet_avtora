@@ -24,112 +24,23 @@
           <% end %>
         </div>
 
-        <%= link_to new_document_path, class: "button is-primary" do %>
-          <span class="icon is-small">
-            <i class="fa-solid fa-arrow-up-from-bracket"></i>
-          </span>
-          <span>Завантажити документи</span>
-        <% end %>
-
-        <button
-          class="button is-success"
-          id="sign-selected-documents"
-          data-checkbox-target="signButton"
-          disabled
-        >
-          <span class="icon is-small">
-            <i class="fas fa-signature"></i>
-          </span>
-          <span>Відправити на підпис</span>
-        </button>
-
-        <button
-          class="button is-danger"
-          id="delete-selected-documents"
-          data-checkbox-target="deleteButton"
-          data-action="click->checkbox#showDeleteModal"
-          disabled
-        >
-          <span class="icon is-small">
-            <i class="fas fa-trash"></i>
-          </span>
-          <span>Видалити обрані</span>
-        </button>
-
-        <div
-          id="bulk-delete-modal"
-          class="modal"
-          data-controller="modal"
-          data-checkbox-target="deleteModal"
-        >
-          <div class="modal-background" data-action="click->modal#close"></div>
-          <div class="modal-card">
-            <header class="modal-card-head">
-              <p class="modal-card-title">
-                Підтвердіть масове видалення
-              </p>
-              <button
-                class="delete"
-                aria-label="Close"
-                data-action="click->modal#close"
-              ></button>
-            </header>
-
-            <section class="modal-card-body">
-              <p>
-                Ви впевнені, що хочете видалити
-                <strong><span id="delete-count" data-checkbox-target="deleteCount">0</span></strong>
-                обраних документів?
-              </p>
-              <p class="has-text-danger mt-3">Цю дію не можна скасувати!</p>
-            </section>
-
-            <footer class="modal-card-foot">
-              <div class="buttons">
-                <%= form_with url: bulk_delete_documents_path, method: :delete, id: "bulk-delete-form", data: { turbo_frame: "documents_table" } do %>
-                  <button
-                    type="submit"
-                    id="confirm-bulk-delete"
-                    class="button is-danger"
-                    data-action="click->checkbox#confirmBulkDelete"
-                  >
-                    Так, видалити
-                  </button>
-                <% end %>
-                <button class="button" data-action="click->modal#close">
-                  Скасувати
-                </button>
-              </div>
-            </footer>
-          </div>
-        </div>
-      </div>
-    </nav>
-
-    <nav class="level is-align-items-baseline">
-      <div class="level-left is-align-items-baseline">
         <div class="level-item">
-          <div class="buttons has-addons mb-4">
+          <div class="buttons has-addons">
             <%= link_to "Всі",
-                        documents_path(params.permit(:q).merge(status: nil)),
-                        class: "button is-small #{"is-link" if params[:status].blank?}" %>
+              filtered_documents_path(nil),
+              class: "button #{"is-link" if params[:status].blank?}" %>
+
             <%= link_to "Є автор",
-                        documents_path(params.permit(:q).merge(status: "linked")),
-                        class: "button is-small #{"is-success is-selected" if params[:status] == "linked"}" %>
+              filtered_documents_path("linked"),
+              class: "button #{"is-success is-selected" if params[:status] == "linked"}" %>
+
             <%= link_to "Без автора",
-                        documents_path(params.permit(:q).merge(status: "unlinked")),
-                        class: "button is-small #{"is-danger is-selected" if params[:status] == "unlinked"}" %>
+              filtered_documents_path("unlinked"),
+              class: "button #{"is-danger is-selected" if params[:status] == "unlinked"}" %>
           </div>
         </div>
-        <div class="level-item">
-          <p class="subtitle is-6">
-            <span class="tag is-info is-light">
-              Документів обрано:
-              <strong><span id="selected-count" data-checkbox-target="selectedCount">0</span></strong>
-            </span>
-          </p>
-        </div>
       </div>
+
       <div class="level-right is-align-items-baseline">
         <div class="level-item">
           <p class="subtitle is-6">
@@ -144,6 +55,6 @@
       </div>
     </nav>
 
-    <%= render partial: "table", locals: { documents: @documents, pagy: @pagy } %>
+    <%= render partial: "table", locals: { documents: @documents, pagy: @pagy, q: @q} %>
   </div>
 </div>
