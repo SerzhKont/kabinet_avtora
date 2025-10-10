@@ -1,89 +1,76 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = [
-    "checkbox",
-    "selectAll",
-    "signButton",
-    "selectedCount",
-    "deleteButton",
-    "deleteModal",
-    "deleteCount",
-  ];
+  static targets = ["checkbox", "selectedCount", "selectAll", "deleteButton"];
 
   connect() {
-    this.updateButtons();
+    // Инициализируем счетчик при загрузке
+    this.updateCounter();
   }
 
-  toggleAll() {
-    this.checkboxTargets.forEach((cb) => {
-      cb.checked = this.selectAllTarget.checked;
+  // Выделить/снять выделение всех
+  toggleAll(event) {
+    const checked = event.target.checked;
+    this.checkboxTargets.forEach((checkbox) => {
+      checkbox.checked = checked;
     });
-    this.updateButtons();
+    this.updateCounter();
   }
 
-  toggleCheckbox() {
-    const allChecked = this.checkboxTargets.every((cb) => cb.checked);
-    const someChecked = this.checkboxTargets.some((cb) => cb.checked);
+  // Обновить счетчик при изменении любого чекбокса
+  updateCounter() {
+    const selectedCount = this.checkboxTargets.filter(
+      (checkbox) => checkbox.checked,
+    ).length;
 
-    this.selectAllTarget.checked = allChecked;
-    this.selectAllTarget.indeterminate = someChecked && !allChecked;
+    // Обновляем текст счетчика
+    this.selectedCountTarget.textContent = selectedCount;
 
-    this.updateButtons();
+    // Обновляем кнопку удаления
+    this.updateDeleteButton(selectedCount);
+
+    // Обновляем состояние "Выделить все"
+    this.updateSelectAllState(selectedCount);
   }
 
-  updateButtons() {
-    const checkedCount = this.checkboxTargets.filter((cb) => cb.checked).length;
-    this.selectedCountTarget.textContent = checkedCount;
-    this.deleteCountTarget.textContent = checkedCount;
-    this.signButtonTarget.disabled = checkedCount === 0;
-    this.deleteButtonTarget.disabled = checkedCount === 0;
-  }
-
-  showDeleteModal() {
-    this.deleteModalTarget.classList.add("is-active");
-  }
-
-  confirmBulkDelete(event) {
-    event.preventDefault();
-    const form = this.element.querySelector("#bulk-delete-form");
-    const selectedIds = this.checkboxTargets
-      .filter((checkbox) => checkbox.checked)
-      .map((checkbox) => checkbox.value);
-
-    if (selectedIds.length === 0) {
-      alert("Оберіть хоча б один документ для видалення.");
-      return;
+  preventIfDisabled(event) {
+    if (this.deleteButtonTarget.classList.contains("disabled")) {
+      event.preventDefault();
+      event.stopPropagation();
+    } else {
+      // Обновляем ссылку с актуальным количеством
+      const selectedCount = this.checkboxTargets.filter(
+        (checkbox) => checkbox.checked,
+      ).length;
+      const url = new URL(this.deleteButtonTarget.href);
+      url.searchParams.set("selected_count", selectedCount);
+      this.deleteButtonTarget.href = url.toString();
     }
-
-    // Добавляем скрытые поля с ID документов в форму
-    selectedIds.forEach((id) => {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = "document_ids[]";
-      input.value = id;
-      form.appendChild(input);
-    });
-
-    this.closeModal(); // Закрываем модальное окно
-    form.submit();
   }
 
-  closeModal() {
-    this.deleteModalTarget.classList.remove("is-active");
+  updateDeleteButton(selectedCount) {
+    if (selectedCount > 0) {
+      // Активируем кнопку
+      this.deleteButtonTarget.classList.remove("disabled");
+      this.deleteButtonTarget.title = "Видалити обрані";
+    } else {
+      // Деактивируем кнопку
+      this.deleteButtonTarget.classList.add("disabled");
+      this.deleteButtonTarget.title =
+        "Виберіть хоча б один документ для видалення";
+    }
   }
 
-  getSelectedIds() {
-    return this.checkboxTargets
-      .filter((checkbox) => checkbox.checked)
-      .map((checkbox) => checkbox.value);
-  }
-  resetCheckboxes() {
-    this.checkboxTargets.forEach((cb) => {
-      cb.checked = false;
-    });
-    this.selectAllTarget.checked = false;
-    this.selectAllTarget.indeterminate = false;
-    this.updateButtons();
+  updateSelectAllState(selectedCount) {
+    if (selectedCount === 0) {
+      this.selectAllTarget.checked = false;
+      this.selectAllTarget.indeterminate = false;
+    } else if (selectedCount === this.checkboxTargets.length) {
+      this.selectAllTarget.checked = true;
+      this.selectAllTarget.indeterminate = false;
+    } else {
+      this.selectAllTarget.checked = false;
+      this.selectAllTarget.indeterminate = true;
+    }
   }
 }

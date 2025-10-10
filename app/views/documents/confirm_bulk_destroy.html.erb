@@ -1,0 +1,35 @@
+<%= turbo_frame_tag "modal" do %>
+  <div
+    class="modal is-active"
+    data-controller="modal"
+    data-modal-target="modal"
+  >
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Підтвердіть масове видалення файлів</p>
+
+        <%= link_to "", "#",  data: { action: "modal#close"}, class: "delete" %>
+      </header>
+
+      <section class="modal-card-body">
+        Ви впевнені, що хочете видалити
+        <strong><span id="selected-count"><%= params[:selected_count] || 0 %></span></strong>
+        документів?
+      </section>
+
+      <footer class="modal-card-foot">
+        <div class="buttons">
+          <%= button_tag "Так, видалити",
+            type: :submit,
+            name: 'bulk_action', 
+            value: 'delete',
+            class: 'button is-danger',
+            data: { turbo_frame: "documents_table" } %>
+
+          <%= link_to "Скасувати", "#",  data: { action: "modal#close"}, class: "button" %>
+        </div>
+      </footer>
+    </div>
+  </div>
+<% end %>

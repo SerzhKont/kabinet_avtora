@@ -42,6 +42,12 @@ th a.sort_link:hover {
   text-decoration: underline;
 }
 
+a.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 @media screen and (max-width: 768px) {
   .menu {
     display: none;

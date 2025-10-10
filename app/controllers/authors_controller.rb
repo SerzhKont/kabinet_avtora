@@ -36,7 +36,8 @@ class AuthorsController < ApplicationController
     else
       redirect_to root_path, alert: "Посилання недійсне або прострочене."
     end
-end
+  end
+
   private
 
   def author_params

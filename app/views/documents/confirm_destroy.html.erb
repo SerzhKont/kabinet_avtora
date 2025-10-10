@@ -1,0 +1,33 @@
+<%= turbo_frame_tag "modal" do %>
+  <div
+    class="modal is-active"
+    data-controller="modal"
+    data-modal-target="modal"
+  >
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Підтвердіть видалення файла</p>
+
+        <%= link_to "", "#",  data: { action: "modal#close"}, class: "delete" %>
+      </header>
+
+      <section class="modal-card-body">
+        Ви впевнені, що хочете видалити документ
+        <strong><%= @document.file.filename if @document.file.attached? %></strong>
+        ?
+      </section>
+
+      <footer class="modal-card-foot">
+        <div class="buttons">
+          <%= button_to "Так, видалити",
+            document_path(@document),
+            method: :delete,
+            data: { turbo_frame: "documents_table" },
+            class: "button is-danger" %>
+          <%= link_to "Скасувати", "#",  data: { action: "modal#close"}, class: "button" %>
+        </div>
+      </footer>
+    </div>
+  </div>
+<% end %>

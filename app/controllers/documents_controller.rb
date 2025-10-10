@@ -2,8 +2,8 @@ class DocumentsController < ApplicationController
   include Pagy::Backend
 
   before_action :authenticate_user!, only: [ :author_index, :sign_one, :sign_all ]
-  before_action :ensure_manager, only: [ :edit, :update, :destroy, :bulk_delete ]
-  before_action :set_document, only: [ :show, :edit, :update, :destroy ]
+  before_action :ensure_manager, only: [ :edit, :update, :destroy, :bulk_action ]
+  before_action :set_document, only: [ :show, :edit, :update, :confirm_destroy ]
 
   def author_index
     @author = Author.find_by(code: params[:author_code])
@@ -82,36 +82,78 @@ class DocumentsController < ApplicationController
     end
   end
 
-  def destroy
-    @document.destroy
-    redirect_to documents_path, notice: "Документ удалён."
+  def confirm_destroy
+    render template: "documents/confirm_destroy"
   end
 
-  def bulk_delete
-    if params[:document_ids].present?
-      Document.where(id: params[:document_ids]).destroy_all
-      respond_to do |format|
-        format.html { redirect_to documents_path, notice: "Вибрані документи видалено." }
-        format.turbo_stream do
-          render turbo_stream: [
-            turbo_stream.replace("documents_table", partial: "documents/table", locals: { documents: Document.all, pagy: nil }),
-            turbo_stream.update("notifications", partial: "shared/notice", locals: { notice: "Вибрані документи видалено." }),
-            turbo_stream.append("body", "<script>document.querySelector('[data-controller=\"checkbox\"]').checkboxController.resetCheckboxes()</script>")
-          ]
-        end
+  def confirm_bulk_destroy
+    render template: "documents/confirm_bulk_destroy"
+  end
+
+  def destroy
+    document = Document.find(params[:id])
+    document.destroy
+
+    @q = Document.ransack(params[:q])
+    scope = params[:status].present? ? Document.where(status: params[:status]) : Document.all
+    items_per_page = params[:items]&.to_i || 25
+    items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
+    @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          "documents_table",
+          partial: "documents/table",
+          locals: { documents: @documents, pagy: @pagy, q: @q }
+        )
       end
+      format.html { redirect_to documents_path, notice: "Документ успішно видалено!" }
+    end
+  end
+
+  def bulk_action
+    document_ids = params[:document_ids] || []
+    action = params[:bulk_action]
+
+    if document_ids.empty?
+      redirect_to documents_path, alert: "Не выбрано ни одного документа"
+      return
+    end
+
+    case action
+    when "delete"
+        bulk_delete(document_ids)
+    when "email"
+        bulk_email(document_ids)
     else
-      respond_to do |format|
-        format.html { redirect_to documents_path, alert: "Оберіть хоча б один документ для видалення." }
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.update("notifications", partial: "shared/alert", locals: { alert: "Оберіть хоча б один документ для видалення." })
-        end
+        redirect_to documents_path, alert: "Выберите действие"
+    end
+
+    # Повторно загружаем документы для обновления таблицы
+    @q = Document.ransack(params[:q])
+    scope = params[:status].present? ? Document.where(status: params[:status]) : Document.all
+    items_per_page = params[:items]&.to_i || 25
+    items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
+    @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
+
+    # Рендерим index для обновления turbo-frame
+    respond_to do |format|
+      format.turbo_stream do
+        # Заменяем всю таблицу новым partial
+        render turbo_stream: turbo_stream.replace(
+          "documents_table",
+          partial: "documents/table",
+          locals: { documents: @documents, pagy: @pagy }
+        )
       end
+      format.html { redirect_to documents_path, notice: "Документ успішно видалено!" }
     end
   end
 
   def unlinked
-    @documents = Document.where(status: "unlinked").order(created_at: :desc)
+    @q = Document.where(status: "unlinked").ransack(params[:q])
+    @documents = @q.result.order(created_at: :desc)
   end
 
   private
@@ -129,5 +171,24 @@ class DocumentsController < ApplicationController
       redirect_to root_path, alert: "Доступ запрещен."
       false
     end
+  end
+
+  def bulk_delete(document_ids)
+    count = Document.where(id: document_ids).destroy_all.count
+    flash.now[:notice] = "Удалено документов: #{count}"
+  end
+
+  def bulk_email(document_ids)
+    documents = Document.where(id: document_ids)
+
+    # Отправка через фоновую задачу (рекомендуется)
+    # DocumentMailerJob.perform_later(documents.pluck(:id))
+
+    # Или синхронная отправка (для простоты)
+    documents.each do |document|
+      DocumentMailer.send_document(document).deliver_later
+    end
+
+    flash.now[:notice] = "Отправка #{documents.count} документов запланирована"
   end
 end

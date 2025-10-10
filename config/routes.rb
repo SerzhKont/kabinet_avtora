@@ -1,12 +1,17 @@
 Rails.application.routes.draw do
+  root "documents#index"
+
   resource :session, only: [ :new, :create, :destroy ]
   resources :documents, only: [ :index, :show, :new, :create, :edit, :update, :destroy ] do
     collection do
-      delete :bulk_delete
+      post :bulk_action
+      get :confirm_bulk_destroy
+    end
+    member do
+      get :confirm_destroy
     end
   end
   resources :authors
-  root "documents#index"
   resources :passwords, param: :token
   post "dismiss_notification", to: "application#dismiss_notification", as: :dismiss_notification
   get "author_documents/:author_code", to: "documents#author_index", as: :author_documents  # Magic link endpoint
