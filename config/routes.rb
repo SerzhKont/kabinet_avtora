@@ -6,9 +6,11 @@ Rails.application.routes.draw do
     collection do
       post :bulk_action
       get :confirm_bulk_destroy
+      get :confirm_bulk_send_for_signature
     end
     member do
       get :confirm_destroy
+      get :confirm_send_for_signature
     end
   end
   resources :authors

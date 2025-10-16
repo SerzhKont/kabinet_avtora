@@ -3,7 +3,7 @@ class DocumentsController < ApplicationController
 
   before_action :authenticate_user!, only: [ :author_index, :sign_one, :sign_all ]
   before_action :ensure_manager, only: [ :edit, :update, :destroy, :bulk_action ]
-  before_action :set_document, only: [ :show, :edit, :update, :confirm_destroy ]
+  before_action :set_document, only: [ :show, :edit, :update, :confirm_destroy, :confirm_send_for_signature ]
 
   def author_index
     @author = Author.find_by(code: params[:author_code])
@@ -83,11 +83,19 @@ class DocumentsController < ApplicationController
   end
 
   def confirm_destroy
-    render template: "documents/confirm_destroy"
+    render partial: "confirm_destroy_modal"
   end
 
   def confirm_bulk_destroy
-    render template: "documents/confirm_bulk_destroy"
+    render partial: "confirm_bulk_destroy_modal"
+  end
+
+  def confirm_send_for_signature
+    render partial: "confirm_send_for_signature_modal"
+  end
+
+  def confirm_bulk_send_for_signature
+    render partial: "confirm_bulk_send_for_signature_modal"
   end
 
   def destroy

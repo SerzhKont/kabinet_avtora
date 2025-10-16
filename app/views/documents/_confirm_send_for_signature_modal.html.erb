@@ -1,0 +1,37 @@
+<%= turbo_frame_tag "modal" do %>
+  <div
+    class="modal is-active"
+    data-controller="modal"
+    data-modal-target="modal"
+  >
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">
+          Підтвердіть відправку на підпис документа
+        </p>
+
+        <%= link_to "", "#",  data: { action: "modal#close"}, class: "delete" %>
+      </header>
+
+      <section class="modal-card-body">
+        Ви впевнені, що хочете відправити на підпис
+        <strong><%= @document.author.name if @document.author %></strong>
+        документ
+        <strong><%= @document.file.filename if @document.file.attached? %></strong>
+        ?
+      </section>
+
+      <footer class="modal-card-foot">
+        <div class="buttons">
+          <%= button_to "Так, відправити",
+            document_path(@document),
+            method: :delete,
+            data: { turbo_frame: "documents_table" },
+            class: "button is-link" %>
+          <%= link_to "Скасувати", "#",  data: { action: "modal#close"}, class: "button" %>
+        </div>
+      </footer>
+    </div>
+  </div>
+<% end %>

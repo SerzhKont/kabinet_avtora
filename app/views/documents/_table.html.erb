@@ -95,7 +95,7 @@
               <td>
                 <div class="level mt-0 mb-0">
                   <div class="level-left">
-                    <div class="level-left">
+                    <div class="level-item">
                       <% if doc.file.attached? %>
                         <%= link_to rails_blob_path(doc.file, disposition: "attachment"), class: "has-text-dark", title: "Завантажити" do %>
                           <span class="icon is-small">
@@ -105,7 +105,7 @@
                       <% end %>
                     </div>
 
-                    <div class="level-left">
+                    <div class="level-item">
                       <%= link_to edit_document_path(doc), class: "has-text-dark", title: "Редагувати", data: { turbo: false } do %>
                         <span class="icon is-small">
                           <i class="fas fa-edit" aria-hidden="true"></i>
@@ -113,8 +113,8 @@
                       <% end %>
                     </div>
 
-                    <div class="level-left">
-                      <%= link_to confirm_destroy_document_path(doc), 
+                    <div class="level-item">
+                      <%= link_to confirm_destroy_document_path(doc),
                       class: "has-text-dark", 
                       title: "Видалити",
                       data: { turbo_frame: "modal", turbo_prefetch: "false" } do %>
@@ -124,7 +124,21 @@
                       <% end %>
                     </div>
 
-                    <div class="level-left">
+                    <div class="level-item">
+                      <% if doc.status == 'linked' %>
+                        <%= link_to confirm_send_for_signature_document_path(doc),
+                        class: "button is-link is-small", 
+                        title: "Відправити на підпис автору",
+                        data: { turbo_frame: "modal", turbo_prefetch: "false" } do %>
+                          <span class="icon">
+                            <i class="fa-solid fa-paper-plane"></i>
+                          </span>
+                          <span>Відправити</span>
+                        <% end %>
+                      <% end %>
+                    </div>
+
+                    <div class="level-item">
                       <% if doc.status == 'unlinked' %>
                         <%= link_to edit_document_path(doc), 
                         class: "button is-warning is-small", 
