@@ -97,6 +97,10 @@ gems:
     revision: 815e8f97e0be3127ccdb09c4bfe3908797f937d6
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: azure_communication_email
+  version: 0.2.0
+  source:
+    type: rubygems
 - name: base64
   version: 0.3.0
   source:
@@ -473,6 +477,10 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: solargraph
+  version: 0.57.0
+  source:
+    type: rubygems
 - name: sqlite3
   version: '2.0'
   source:

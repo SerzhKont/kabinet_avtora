@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .button { display: inline-block; padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; margin: 20px 0; }
+    .warning { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 20px 0; }
+  </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Добрий день, <%= @author.name %>!</h2>
+
+      <p>
+        Для вас підготовлені документи (<%= @documents_count %> шт.). Ви можете переглянути їх за посиланням нижче:
+      </p>
+
+      <p style="text-align: center;">
+        <%= link_to 'Переглянути документи', @access_url, class: 'button' %>
+      </p>
+
+      <div class="warning">
+        <strong>Важливо:</strong> Дане посилання дійсне до <%= l(@expires_at, format: :long) %> (7 днів).
+      </div>
+
+      <p>Якщо у вас виникли питання, будь-ласка, зв'яжіться з нами.</p>
+
+      <p>
+        З повагою,
+        <br>
+        Команда Експертус
+      </p>
+    </div>
+  </body>
+</html>

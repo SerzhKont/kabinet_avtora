@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_16_083951) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_26_164551) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -49,15 +49,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_16_083951) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "author_access_tokens", force: :cascade do |t|
+    t.integer "author_id", null: false
+    t.string "token", null: false
+    t.datetime "expires_at"
+    t.text "document_ids"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_author_access_tokens_on_author_id"
+    t.index ["expires_at"], name: "index_author_access_tokens_on_expires_at"
+    t.index ["token"], name: "index_author_access_tokens_on_token", unique: true
+  end
+
   create_table "authors", force: :cascade do |t|
     t.string "name"
     t.string "email_address"
     t.integer "code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "access_token"
-    t.datetime "access_token_expires_at"
-    t.index ["access_token"], name: "index_authors_on_access_token", unique: true
     t.index ["code"], name: "index_authors_on_code", unique: true
   end
 
@@ -111,6 +120,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_16_083951) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "author_access_tokens", "authors"
   add_foreign_key "documents", "authors"
   add_foreign_key "documents", "users", column: "uploaded_by_id"
   add_foreign_key "sessions", "users"

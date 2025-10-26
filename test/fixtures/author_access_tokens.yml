@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  author: one
+  token: MyString
+  expires_at: 2025-10-26 18:45:51
+  document_ids: 1
+
+two:
+  author: two
+  token: MyString
+  expires_at: 2025-10-26 18:45:51
+  document_ids: 1

@@ -66,7 +66,7 @@ class DocumentsController < ApplicationController
   end
 
   def edit
-    render template: "documents/edit"
+    render "edit"
   end
 
   def update
