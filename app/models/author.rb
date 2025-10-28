@@ -1,5 +1,4 @@
 class Author < ApplicationRecord
-  has_secure_token :access_token
   validates :code, presence: true, uniqueness: true, length: { is: 10 }, numericality: { only_integer: true }
   validates :name, presence: true
   validates :email_address, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }

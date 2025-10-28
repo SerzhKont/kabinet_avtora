@@ -33,8 +33,7 @@
           <th>Пошта</th>
           <th>ІПН</th>
           <th>Додано</th>
-          <th>Строк дії посилання</th>
-          <th></th>
+          <th>Дії</th>
         </tr>
       </thead>
       <tbody>
@@ -46,39 +45,25 @@
             <td><%= author.code %></td>
             <td><%= author.created_at.strftime("%Y/%m/%d") %></td>
             <td>
-              <%= author.access_token_expires_at&.strftime("%Y/%m/%d %H:%M") || "-" %>
-            </td>
-            <td>
-              <div class="dropdown dropdown-table is-right">
-                <div class="dropdown-trigger">
-                  <button
-                    class="button is-small"
-                    aria-haspopup="true"
-                    aria-controls="dropdown-table-menu"
-                  >
-                    <span class="icon is-small">
-                      <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
-                    </span>
-                  </button>
-                </div>
-                <div class="dropdown-menu" id="dropdown-table-menu" role="menu">
-                  <div class="dropdown-content">
-                    <%= link_to edit_author_path(author), class: "dropdown-item" do %>
+              <div class="level mt-0 mb-0">
+                <div class="level-left">
+                  <div class="level-item">
+                    <%= link_to edit_author_path(author), class: "has-text-dark", title: "Редагувати" do %>
                       <span class="icon is-small">
                         <i class="fas fa-edit" aria-hidden="true"></i>
                       </span>
-                      Редагувати
                     <% end %>
-
+                  </div>
+                  <div class="level-item">
                     <a
                       href="#"
-                      class="dropdown-item modal-trigger"
+                      class="has-text-dark modal-trigger"
+                      title="Видалити"
                       data-target="delete-author-modal-<%= author.id %>"
                     >
                       <span class="icon is-small">
                         <i class="fas fa-trash-alt" aria-hidden="true"></i>
                       </span>
-                      Видалити
                     </a>
                   </div>
                 </div>
