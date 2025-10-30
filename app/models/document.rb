@@ -19,13 +19,13 @@ class Document < ApplicationRecord
     STATUS_LABELS[status] || status.humanize
   end
 
-  before_validation :extract_metadata, if: -> { file.attached? }
+  before_validation :extract_metadata, if: -> { file.attached? && new_record? }
   validates :title, presence: true
   validates :file, presence: true, on: :create
   validates :uploaded_by, presence: true
   validate :check_file_size
 
-   before_save :update_extracted_code_from_author
+  before_save :update_extracted_code_from_author
   # before_save :generate_file_hash, if: -> { file.attached? && file.changed? }
 
   # Allow searching/sorting on these attributes
@@ -41,9 +41,7 @@ class Document < ApplicationRecord
   private
 
   def update_extracted_code_from_author
-    if author_id_changed? || (author.present? && extracted_code != author.code.to_s)
-      self.extracted_code = author&.code.to_s
-    end
+    self.extracted_code = author&.code.to_s
   end
 
   def extract_metadata

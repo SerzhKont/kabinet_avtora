@@ -15,22 +15,6 @@
           </div>
 
           <div class="level-item">
-            <%= link_to confirm_bulk_destroy_documents_path(selected_count: "SELECTED_COUNT"),
-               class: "button is-danger disabled", title: "Видалити обрані",
-               data: { 
-                 turbo_frame: "modal",
-                 turbo_prefetch: "false",
-                 checkbox_target: "deleteButton",
-                 action: "click->checkbox#preventIfDisabled"
-               } do %>
-              <span class="icon is-small">
-                <i class="fas fa-trash" aria-hidden="true"></i>
-              </span>
-              <span>Видалити обрані</span>
-            <% end %>
-          </div>
-
-          <div class="level-item">
             <%= link_to confirm_bulk_send_for_signature_documents_path(selected_count: "SELECTED_COUNT"),
                class: "button is-link disabled", title: "Відправити обрані на підпис",
                data: {
@@ -43,6 +27,22 @@
                 <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
               </span>
               <span>Відправити на підпис</span>
+            <% end %>
+          </div>
+
+          <div class="level-item">
+            <%= link_to confirm_bulk_destroy_documents_path(selected_count: "SELECTED_COUNT"),
+               class: "button is-danger disabled", title: "Видалити обрані",
+               data: { 
+                 turbo_frame: "modal",
+                 turbo_prefetch: "false",
+                 checkbox_target: "deleteButton",
+                 action: "click->checkbox#preventIfDisabled"
+               } do %>
+              <span class="icon is-small">
+                <i class="fas fa-trash" aria-hidden="true"></i>
+              </span>
+              <span>Видалити обрані</span>
             <% end %>
           </div>
         </div>

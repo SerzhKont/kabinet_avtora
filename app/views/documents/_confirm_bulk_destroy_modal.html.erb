@@ -22,9 +22,9 @@
         <div class="buttons">
           <%= button_tag "Так, видалити",
             type: :submit,
-            name: 'bulk_action', 
-            value: 'delete',
-            class: 'button is-danger',
+            name: "bulk_action", 
+            value: "delete",
+            class: "button is-danger",
             data: { turbo_frame: "documents_table" } %>
 
           <%= link_to "Скасувати", "#",  data: { action: "modal#close"}, class: "button" %>

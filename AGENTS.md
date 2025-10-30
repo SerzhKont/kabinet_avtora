@@ -2,6 +2,8 @@
 
 This document outlines the technical conventions and commands for automated agents operating within this Ruby on Rails project.
 
+Communication language: Russian
+
 ## 1. Commands
 
 | Type | Command | Notes |

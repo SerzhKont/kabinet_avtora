@@ -25,8 +25,8 @@
       <footer class="modal-card-foot">
         <div class="buttons">
           <%= button_to "Так, відправити",
-        send_single_admin_document_path(document),
-            method: :delete,
+            send_single_document_path(@document.id),
+            method: :post,
             data: { turbo_frame: "documents_table" },
             class: "button is-link" %>
           <%= link_to "Скасувати", "#",  data: { action: "modal#close"}, class: "button" %>

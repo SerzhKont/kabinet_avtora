@@ -1,7 +1,13 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["checkbox", "selectedCount", "selectAll", "deleteButton", "sendButton"];
+  static targets = [
+    "checkbox",
+    "selectedCount",
+    "selectAll",
+    "deleteButton",
+    "sendButton",
+  ];
 
   connect() {
     // Инициализируем счетчик при загрузке
@@ -29,12 +35,16 @@ export default class extends Controller {
     // Обновляем кнопку удаления
     this.updateDeleteButton(selectedCount);
 
+    // Обновляем кнопку отправки на подпись
+    this.updateSendButton(selectedCount);
+
     // Обновляем состояние "Выделить все"
     this.updateSelectAllState(selectedCount);
   }
 
   preventIfDisabled(event) {
-    if (this.deleteButtonTarget.classList.contains("disabled")) {
+    const button = event.currentTarget;
+    if (button.classList.contains("disabled")) {
       event.preventDefault();
       event.stopPropagation();
     } else {
@@ -42,9 +52,9 @@ export default class extends Controller {
       const selectedCount = this.checkboxTargets.filter(
         (checkbox) => checkbox.checked,
       ).length;
-      const url = new URL(this.deleteButtonTarget.href);
+      const url = new URL(button.href);
       url.searchParams.set("selected_count", selectedCount);
-      this.deleteButtonTarget.href = url.toString();
+      button.href = url.toString();
     }
   }
 
@@ -58,6 +68,19 @@ export default class extends Controller {
       this.deleteButtonTarget.classList.add("disabled");
       this.deleteButtonTarget.title =
         "Виберіть хоча б один документ для видалення";
+    }
+  }
+
+  updateSendButton(selectedCount) {
+    if (selectedCount > 0) {
+      // Активируем кнопку
+      this.sendButtonTarget.classList.remove("disabled");
+      this.sendButtonTarget.title = "Відправити обрані на підпис";
+    } else {
+      // Деактивируем кнопку
+      this.sendButtonTarget.classList.add("disabled");
+      this.sendButtonTarget.title =
+        "Виберіть хоча б один документ для відправки на підпис";
     }
   }
 

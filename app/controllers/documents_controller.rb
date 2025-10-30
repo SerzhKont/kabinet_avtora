@@ -48,10 +48,9 @@ class DocumentsController < ApplicationController
   end
 
   def update
-    @document = Document.find(params[:id])
-    if @document.update(document_params)
-      new_status = @document.author_id.present? ? "linked" : "unlinked"
-      @document.update(status: new_status)
+    new_status = document_params[:author_id].present? ? "linked" : "unlinked"
+
+    if @document.update(document_params.merge(status: new_status))
       redirect_to documents_path,
                   notice: "Документ '#{@document.title}' успішно оновлено. " +
                           (@document.author ? "Прив'язано до автора: #{@document.author.name}" : "Автора видалено")

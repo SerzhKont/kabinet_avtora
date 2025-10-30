@@ -3,8 +3,7 @@ class DocumentGroup < ApplicationRecord
 
   serialize :document_ids, coder: JSON
 
-  before_create :generate_token
-  before_create :set_expiration
+  after_initialize :set_defaults, if: :new_record?
 
   validates :token, presence: true, uniqueness: true
   validates :expires_at, presence: true
@@ -25,11 +24,8 @@ class DocumentGroup < ApplicationRecord
 
   private
 
-  def generate_token
+  def set_defaults
     self.token ||= SecureRandom.urlsafe_base64(32)
-  end
-
-  def set_expiration
     self.expires_at ||= 7.days.from_now
   end
 end
