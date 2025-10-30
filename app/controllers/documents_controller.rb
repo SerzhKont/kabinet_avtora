@@ -187,16 +187,14 @@ class DocumentsController < ApplicationController
   end
 
   def bulk_email(document_ids)
-    documents = Document.where(id: document_ids)
+    document_ids = params[:document_ids]
 
-    # Отправка через фоновую задачу (рекомендуется)
-    # DocumentMailerJob.perform_later(documents.pluck(:id))
-
-    # Или синхронная отправка (для простоты)
-    documents.each do |document|
-      DocumentMailer.send_document(document).deliver_later
+    if document_ids.blank?
+      redirect_to documents_path, alert: "Вы не выбрали ни одного документа."
+      return
     end
 
-    flash.now[:notice] = "Отправка #{documents.count} документов запланирована"
+    DocumentGroupMailerService.call(document_ids)
+    redirect_to documents_path, notice: "Письма авторам поставлены в очередь."
   end
 end
