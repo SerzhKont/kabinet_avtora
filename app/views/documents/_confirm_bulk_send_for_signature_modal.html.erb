@@ -7,24 +7,28 @@
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">Підтвердіть видалення файла</p>
+        <p class="modal-card-title">
+          Підтвердіть масову відправку файлів на підпис
+        </p>
 
         <%= link_to "", "#",  data: { action: "modal#close"}, class: "delete" %>
       </header>
 
       <section class="modal-card-body">
-        Ви впевнені, що хочете видалити документ
-        <strong><%= @document.file.filename if @document.file.attached? %></strong>
-        ?
+        Ви впевнені, що хочете відправити
+        <strong><span id="selected-count"><%= params[:selected_count] || 0 %></span></strong>
+        документів?
       </section>
 
       <footer class="modal-card-foot">
         <div class="buttons">
-          <%= button_to "Так, видалити",
-            send_single_admin_document_path(@document),
-            method: :post,
-            data: { turbo_frame: "documents_table" },
-            class: "button is-danger" %>
+          <%= button_tag "Так, відправити",
+            type: :submit,
+            name: "bulk_action", 
+            value: "send",
+            class: "button is-link",
+            data: { turbo_frame: "documents_table" } %>
+
           <%= link_to "Скасувати", "#",  data: { action: "modal#close"}, class: "button" %>
         </div>
       </footer>

@@ -15,11 +15,13 @@
       <h2>Добрий день, <%= @author.name %>!</h2>
 
       <p>
-        Для вас підготовлені документи (<%= @documents_count %> шт.). Ви можете переглянути їх за посиланням нижче:
+        Для вас підготовлені документи (
+        <%= @group.documents.count %>
+        шт.). Ви можете переглянути їх за посиланням нижче:
       </p>
 
       <p style="text-align: center;">
-        <%= link_to 'Переглянути документи', @access_url, class: 'button' %>
+        <%= link_to 'Переглянути документи', @url, class: 'button' %>
       </p>
 
       <div class="warning">

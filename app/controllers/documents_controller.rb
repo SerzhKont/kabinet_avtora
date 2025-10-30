@@ -1,7 +1,7 @@
 class DocumentsController < ApplicationController
   include Pagy::Backend
 
-  before_action :authenticate_user!, only: [ :author_index, :sign_one, :sign_all ]
+  before_action :authenticate_user!, only: [ :author_index ]
   before_action :ensure_manager, only: [ :edit, :update, :destroy, :bulk_action, :send_single ]
   before_action :set_document, only: [ :show, :edit, :update, :confirm_destroy, :confirm_send_for_signature ]
 
@@ -120,8 +120,8 @@ class DocumentsController < ApplicationController
     case action
     when "delete"
         bulk_delete(document_ids)
-    when "email"
-        send_bulk(document_ids)
+    when "send"
+        bulk_send(document_ids)
     else
         redirect_to documents_path, alert: "Выберите действие"
     end
@@ -174,7 +174,7 @@ class DocumentsController < ApplicationController
     flash.now[:notice] = "Удалено документов: #{count}"
   end
 
-  def send_bulk(document_ids)
+  def bulk_send(document_ids)
     document_ids = params[:document_ids]
 
     if document_ids.blank?

@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["checkbox", "selectedCount", "selectAll", "deleteButton"];
+  static targets = ["checkbox", "selectedCount", "selectAll", "deleteButton", "sendButton"];
 
   connect() {
     // Инициализируем счетчик при загрузке

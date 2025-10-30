@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "documents_table" do %>
   <div class="table-container">
     <%= form_with url: bulk_action_documents_path, method: :post, local: true do %>
-      <%= hidden_field_tag 'q[s]', params.dig(:q, :s) if params.dig(:q, :s) %>
+      <%= hidden_field_tag "q[s]", params.dig(:q, :s) if params.dig(:q, :s) %>
       <%= turbo_frame_tag "modal" %>
       <nav class="level">
         <div class="level-left">
@@ -13,19 +13,36 @@
               <span>Завантажити документи</span>
             <% end %>
           </div>
+
           <div class="level-item">
             <%= link_to confirm_bulk_destroy_documents_path(selected_count: "SELECTED_COUNT"),
-              class: "button is-danger disabled", title: "Видалити обрані",
-              data: { 
-                turbo_frame: "modal",
-                turbo_prefetch: "false",
-                checkbox_target: "deleteButton",
-                action: "click->checkbox#preventIfDisabled"
-              } do %>
+               class: "button is-danger disabled", title: "Видалити обрані",
+               data: { 
+                 turbo_frame: "modal",
+                 turbo_prefetch: "false",
+                 checkbox_target: "deleteButton",
+                 action: "click->checkbox#preventIfDisabled"
+               } do %>
               <span class="icon is-small">
                 <i class="fas fa-trash" aria-hidden="true"></i>
               </span>
               <span>Видалити обрані</span>
+            <% end %>
+          </div>
+
+          <div class="level-item">
+            <%= link_to confirm_bulk_send_for_signature_documents_path(selected_count: "SELECTED_COUNT"),
+               class: "button is-link disabled", title: "Відправити обрані на підпис",
+               data: {
+                 turbo_frame: "modal",
+                 turbo_prefetch: "false",
+                 checkbox_target: "sendButton",
+                 action: "click->checkbox#preventIfDisabled"
+               } do %>
+              <span class="icon is-small">
+                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+              </span>
+              <span>Відправити на підпис</span>
             <% end %>
           </div>
         </div>
@@ -76,13 +93,13 @@
         </thead>
         <tbody>
           <% documents.each do |doc| %>
-            <tr class="<%= 'has-background-warning-light' if doc.status == 'unlinked' %>">
+            <tr class="<%= "has-background-warning-light" if doc.status == "unlinked" %>">
               <td>
                 <%= check_box_tag "document_ids[]", doc.id, false, class: "document-checkbox",
                   data: { checkbox_target: "checkbox", action: "change->checkbox#updateCounter" } %>
               </td>
               <td>
-                <%= link_to doc.file.filename, rails_blob_url(doc.file, disposition: 'attachment') if doc.file.attached? %>
+                <%= link_to doc.file.filename, rails_blob_url(doc.file, disposition: "attachment") if doc.file.attached? %>
               </td>
               <td>
                 <span class="tag <%= status_tag_class(doc.status) %> has-text-dark"><%= doc.status_label %></span>
@@ -125,7 +142,7 @@
                     </div>
 
                     <div class="level-item">
-                      <% if doc.status == 'linked' %>
+                      <% if doc.status == "linked" %>
                         <%= link_to confirm_send_for_signature_document_path(doc),
                         class: "button is-link is-small", 
                         title: "Відправити на підпис автору",
@@ -137,7 +154,7 @@
                         <% end %>
                       <% end %>
 
-                      <% if doc.status == 'unlinked' %>
+                      <% if doc.status == "unlinked" %>
                         <%= link_to edit_document_path(doc), 
                         class: "button is-warning is-small", 
                         title: "Прив'язати автора",
@@ -145,7 +162,7 @@
                           <span class="icon">
                             <i class="fas fa-link"></i>
                           </span>
-                          <span>Прив'язати</span>
+                          <span>Прив"язати</span>
                         <% end %>
                       <% end %>
                     </div>

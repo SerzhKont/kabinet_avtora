@@ -1,0 +1,34 @@
+<section class="section">
+  <div class="container">
+    <h1 class="title is-3">Документи для <%= @author.name %></h1>
+
+    <p class="block">
+      Це посилання доступу дійсне до <span class="has-text-weight-bold"><%= l @group.expires_at, format: :long %></span>
+    </p>
+
+    <hr>
+
+    <h3 class="title is-5">Список документів (<%= @documents.count %>)</h3>
+
+    <div class="table-container">
+      <table class="table is-striped is-fullwidth">
+        <thead>
+          <tr>
+            <th>Назва</th>
+            <th>Дата завантаження</th>
+            <th>Код</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @documents.each do |doc| %>
+            <tr>
+              <td><%= doc.title %></td>
+              <td><%= l doc.created_at, format: :short %></td>
+              <td><%= doc.extracted_code %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
