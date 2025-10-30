@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     member do
       get :confirm_destroy
       get :confirm_send_for_signature
+      post :send_single
     end
   end
   resources :authors

@@ -2,7 +2,7 @@ class DocumentsController < ApplicationController
   include Pagy::Backend
 
   before_action :authenticate_user!, only: [ :author_index, :sign_one, :sign_all ]
-  before_action :ensure_manager, only: [ :edit, :update, :destroy, :bulk_action ]
+  before_action :ensure_manager, only: [ :edit, :update, :destroy, :bulk_action, :send_single ]
   before_action :set_document, only: [ :show, :edit, :update, :confirm_destroy, :confirm_send_for_signature ]
 
   def author_index
@@ -12,28 +12,6 @@ class DocumentsController < ApplicationController
     else
       redirect_to root_path, alert: "Автор із кодом #{params[:author_code]} не знайдений."
     end
-  end
-
-  def sign_one
-    @document = Document.find(params[:id])
-    @author = Author.find_by(code: params[:author_code])
-    unless @author && @document.author == @author
-      redirect_to root_path, alert: "Недійсний документ або код автора."
-      return
-    end
-    # Заглушка для Дія.Підпис (добавим позже)
-    redirect_to author_documents_path(author_code: @author.code), notice: "Підпис одного документа (заглушка)."
-  end
-
-  def sign_all
-    @author = Author.find_by(code: params[:author_code])
-    unless @author
-      redirect_to root_path, alert: "Автор із кодом #{params[:author_code]} не знайдений."
-      return
-    end
-    @documents = @author.documents.where(status: [ "pending", "linked" ]).limit(7)  # Max 7 для Дія
-    # Заглушка для Дія.Підпис
-    redirect_to author_documents_path(author_code: @author.code), notice: "Підпис всіх документів (заглушка)."
   end
 
   def index
@@ -120,6 +98,16 @@ class DocumentsController < ApplicationController
     end
   end
 
+  def send_single
+    @document = Document.find(params[:id])
+    DocumentGroupMailerService.call([ @document.id ])
+
+    redirect_to documents_path, notice: "Документ '#{@document.title}' отправлен автору."
+
+  rescue ActiveRecord::RecordNotFound
+    redirect_to documents_path, alert: "Документ не найден."
+  end
+
   def bulk_action
     document_ids = params[:document_ids] || []
     action = params[:bulk_action]
@@ -133,7 +121,7 @@ class DocumentsController < ApplicationController
     when "delete"
         bulk_delete(document_ids)
     when "email"
-        bulk_email(document_ids)
+        send_bulk(document_ids)
     else
         redirect_to documents_path, alert: "Выберите действие"
     end
@@ -186,7 +174,7 @@ class DocumentsController < ApplicationController
     flash.now[:notice] = "Удалено документов: #{count}"
   end
 
-  def bulk_email(document_ids)
+  def send_bulk(document_ids)
     document_ids = params[:document_ids]
 
     if document_ids.blank?
