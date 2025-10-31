@@ -1,0 +1,11 @@
+valid_group:
+  author: one
+  token: "valid_token_123"
+  expires_at: <%= 7.days.from_now %>
+  document_ids: "[1, 2]"
+
+expired_group:
+  author: one
+  token: "expired_token_456"
+  expires_at: <%= 7.days.ago %>
+  document_ids: "[1]"

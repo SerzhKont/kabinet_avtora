@@ -1,0 +1,28 @@
+<nav
+  class="navbar is-light is-fixed-top has-border-bottom"
+  role="navigation"
+  aria-label="Public navigation bar"
+>
+  <div class="navbar-brand">
+    <%= link_to "#", class: "navbar-item is-size-4 has-text-weight-bold has-text-dark" do %>
+      <%= image_tag "faviconnew.ico",
+          alt: "Кабінет Автора Logo",
+          style: "max-width: 40px; height: auto;" %>
+      <span>Документи автора</span>
+    <% end %>
+  </div>
+  <div class="navbar-menu is-active">
+    <div class="navbar-end">
+      <% if @author %>
+        <span class="navbar-item has-text-weight-medium">
+          <span class="icon-text">
+            <span class="icon">
+              <i class="fas fa-user"></i>
+            </span>
+            <span><%= @author.name %></span>
+          </span>
+        </span>
+      <% end %>
+    </div>
+  </div>
+</nav>

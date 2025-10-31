@@ -17,6 +17,10 @@ class DocumentGroup < ApplicationRecord
     self.expires_at > Time.current
   end
 
+  def signed?
+    signed_at.present?
+  end
+
   def self.find_valid(token)
     group = find_by(token: token)
     group&.valid_link? ? group : nil

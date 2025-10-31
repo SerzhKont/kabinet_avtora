@@ -19,6 +19,9 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   post "dismiss_notification", to: "application#dismiss_notification", as: :dismiss_notification
   get "/view_documents/:token", to: "document_groups#show", as: :document_group
+  get "/view_documents/:token/documents/:id", to: "document_groups#show_document", as: :view_document_group_document
+  get "/view_documents/:token/sign", to: "document_groups#sign", as: :sign_document_group
+  post "/view_documents/:token/signing", to: "document_groups#signing", as: :signing_document_group
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

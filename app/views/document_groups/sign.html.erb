@@ -1,0 +1,82 @@
+<section class="section">
+  <div class="container">
+    <h1 class="title is-3">Підписання документів</h1>
+
+    <div class="content">
+      <p class="block">
+        Ви збираєтеся підписати документи для <strong><%= @author.name %></strong>.
+      </p>
+      
+      <p class="block">
+        Ця сторінка дійсна до
+        <span class="has-text-weight-bold"><%= l @group.expires_at, format: :long %></span>
+      </p>
+
+      <div class="notification is-info is-light">
+        <div class="content">
+          <p><strong>Увага!</strong> Після підписання документи будуть вважатися офіційно підписаними та не можуть бути змінені.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <h2 class="title is-4">Документи для підписання:</h2>
+
+    <div class="table-container">
+      <table class="table is-fullwidth is-hoverable is-narrow">
+        <thead>
+          <tr class="is-size-6">
+            <th>Назва</th>
+            <th>Додано</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @documents.each do |doc| %>
+            <tr>
+              <td>
+                <%= link_to doc.title, view_document_group_document_path(@group.token, doc.id), target: "_blank" %>
+              </td>
+              <td><%= doc.created_at.strftime("%Y/%m/%d") %></td>
+              <td>
+                <% if doc.signed_at? %>
+                  <span class="tag is-success">Підписано</span>
+                <% else %>
+                  <span class="tag is-warning">Очікує підпису</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+
+    <div class="buttons is-centered">
+      <%= link_to document_group_path(@group.token), class: "button is-light" do %>
+        <span class="icon">
+          <i class="fas fa-arrow-left"></i>
+        </span>
+        <span>Назад до документів</span>
+      <% end %>
+
+      <%= form_with url: signing_document_group_path(@group.token), method: :post, class: "inline" do |form| %>
+        <button type="submit" class="button is-primary is-large" data-turbo="false">
+          <span class="icon">
+            <i class="fas fa-signature"></i>
+          </span>
+          <span>Підписати документи через Дія.Підпис</span>
+        </button>
+      <% end %>
+    </div>
+
+    <div class="notification is-warning is-light mt-5">
+      <div class="content">
+        <p><strong>Інформація про Дія.Підпис:</strong></p>
+        <p>Після натискання кнопки "Підписати документи через Дія.Підпис" вас буде перенаправлено до системи Дія.Підпис для завершення процесу підписання.</p>
+      </div>
+    </div>
+  </div>
+</section>

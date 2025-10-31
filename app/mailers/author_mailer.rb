@@ -3,6 +3,7 @@ class AuthorMailer < ApplicationMailer
     @group = document_group
     @author = @group.author
     @url = document_group_url(@group.token)
+    @expires_at = @group.expires_at
 
     mail(to: @author.email_address, from: "donotreply@expertus.media", subject: "Автор Експертус: документи на підпис [#{@group.documents.count} шт.]")
   end

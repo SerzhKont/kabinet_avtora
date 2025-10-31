@@ -4,3 +4,13 @@ admin:
   email_address: admin@expertus.media
   password_digest: <%= BCrypt::Password.create('admin') %>
   role: admin
+
+one:
+  email_address: user1@example.com
+  password_digest: <%= BCrypt::Password.create('password') %>
+  role: client
+
+two:
+  email_address: user2@example.com
+  password_digest: <%= BCrypt::Password.create('password') %>
+  role: client

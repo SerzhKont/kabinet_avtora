@@ -1,30 +1,65 @@
 <section class="section">
   <div class="container">
-    <h1 class="title is-3">Документи для <%= @author.name %></h1>
+    <h1 class="title is-3">Документи на підпис для <%= @author.name %></h1>
 
     <p class="block">
-      Це посилання доступу дійсне до <span class="has-text-weight-bold"><%= l @group.expires_at, format: :long %></span>
+      Ця сторінка дійсна до
+      <span class="has-text-weight-bold"><%= l @group.expires_at, format: :long %></span>
     </p>
+
+    <% if @group.signed? %>
+      <div class="notification is-success is-light">
+        <div class="content">
+          <p><strong>Документи підписані!</strong> Дата підписання: <%= l @group.signed_at, format: :long %></p>
+        </div>
+      </div>
+    <% end %>
 
     <hr>
 
-    <h3 class="title is-5">Список документів (<%= @documents.count %>)</h3>
+    <nav class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <%= link_to sign_document_group_path(@group.token), class: "button is-primary" do %>
+            <span class="icon">
+              <i class="fas fa-signature"></i>
+            </span>
+            <span>Підписати документи</span>
+          <% end %>
+        </div>
+      </div>
+    </nav>
 
     <div class="table-container">
-      <table class="table is-striped is-fullwidth">
+      <table class="table is-fullwidth is-hoverable is-narrow">
         <thead>
-          <tr>
+          <tr class="is-size-6">
             <th>Назва</th>
-            <th>Дата завантаження</th>
-            <th>Код</th>
+            <th>Додано</th>
+            <th>Дії</th>
           </tr>
         </thead>
         <tbody>
           <% @documents.each do |doc| %>
             <tr>
-              <td><%= doc.title %></td>
-              <td><%= l doc.created_at, format: :short %></td>
-              <td><%= doc.extracted_code %></td>
+              <td>
+                <%= link_to doc.title, url_for(doc.file), target: "_blank" %>
+              </td>
+              <td><%= doc.created_at.strftime("%Y/%m/%d") %></td>
+              <td>
+                <%= link_to view_document_group_document_path(@group.token, doc.id), class: "button is-small is-link is-light" do %>
+                  <span class="icon">
+                    <i class="fas fa-eye"></i>
+                  </span>
+                  <span>Переглянути</span>
+                <% end %>
+                <%= link_to url_for(doc.file), download: doc.file.filename, class: "button is-small is-primary is-light" do %>
+                  <span class="icon">
+                    <i class="fas fa-download"></i>
+                  </span>
+                  <span>Завантажити</span>
+                <% end %>
+              </td>
             </tr>
           <% end %>
         </tbody>

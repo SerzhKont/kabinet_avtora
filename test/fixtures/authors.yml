@@ -1,0 +1,9 @@
+one:
+  name: Author One
+  email_address: author1@example.com
+  code: 1001
+
+two:
+  name: Author Two
+  email_address: author2@example.com
+  code: 1002

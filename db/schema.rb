@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_29_141511) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_31_103155) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -63,6 +63,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_29_141511) do
     t.datetime "created_at", null: false
     t.text "document_ids"
     t.datetime "expires_at"
+    t.datetime "signed_at"
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_document_groups_on_author_id"
