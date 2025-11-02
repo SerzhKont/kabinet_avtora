@@ -1,12 +1,41 @@
-<%= form_with(model: @author, local: true) do |form| %>
-  <div><%= form.label :name, "Ім'я" %><%= form.text_field :name %></div>
+<div class="box">
+  <%= form_with(model: @author, class: "form") do |form| %>
+    <% if @author.errors.any? %>
+      <div class="notification is-danger">
+        <h4 class="title is-5">Помилки:</h4>
+        <ul>
+          <% @author.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
-  <div>
-    <%= form.label :email_address, "Пошта" %>
-    <%= form.text_field :email_address %>
-  </div>
+    <div class="field">
+      <%= form.label :name, "Ім'я", class: "label" %>
+      <div class="control">
+        <%= form.text_field :name, class: "input" %>
+      </div>
+    </div>
 
-  <div><%= form.label :code, "ІПН", "Code" %><%= form.text_field :code %></div>
+    <div class="field">
+      <%= form.label :email_address, "Пошта", class: "label" %>
+      <div class="control">
+        <%= form.text_field :email_address, class: "input" %>
+      </div>
+    </div>
 
-  <%= form.submit %>
-<% end %>
+    <div class="field">
+      <%= form.label :code, "ІПН", class: "label" %>
+      <div class="control">
+        <%= form.text_field :code, maxlength: 10, class: "input" %>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <%= form.submit "Зберегти", class: "button is-primary" %>
+      </div>
+    </div>
+  <% end %>
+</div>

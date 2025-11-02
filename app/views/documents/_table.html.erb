@@ -63,9 +63,14 @@
         <thead>
           <tr class="is-size-6">
             <th>
-              <%= check_box_tag "select_all_documents", "", false, 
-                id: "select-all-documents",
-                data: { checkbox_target: "selectAll", action: "change->checkbox#toggleAll" } %>
+              <%= check_box_tag "select_all_documents",
+              "",
+              false,
+              id: "select-all-documents",
+              data: {
+                checkbox_target: "selectAll",
+                action: "change->checkbox#toggleAll",
+              } %>
             </th>
             <th>
               <%= sort_link(@q, :title, "Назва", class: "has-text-black") %>
@@ -88,6 +93,9 @@
             <th>
               <%= sort_link(@q, :signed_at, "Підписано", class: "has-text-black") %>
             </th>
+            <th>
+              <%= sort_link(@q, :sent_for_signature_at, "Відправлено", class: "has-text-black") %>
+            </th>
             <th>Дії</th>
           </tr>
         </thead>
@@ -95,11 +103,19 @@
           <% documents.each do |doc| %>
             <tr class="<%= "has-background-warning-light" if doc.status == "unlinked" %>">
               <td>
-                <%= check_box_tag "document_ids[]", doc.id, false, class: "document-checkbox",
-                  data: { checkbox_target: "checkbox", action: "change->checkbox#updateCounter" } %>
+                <%= check_box_tag "document_ids[]",
+                doc.id,
+                false,
+                class: "document-checkbox",
+                data: {
+                  checkbox_target: "checkbox",
+                  action: "change->checkbox#updateCounter",
+                } %>
               </td>
               <td>
-                <%= link_to doc.file.filename, rails_blob_url(doc.file, disposition: "attachment") if doc.file.attached? %>
+                <%= if doc.file.attached?
+                  link_to doc.file.filename, rails_blob_url(doc.file, disposition: "attachment")
+                end %>
               </td>
               <td>
                 <span class="tag <%= status_tag_class(doc.status) %> has-text-dark"><%= doc.status_label %></span>
@@ -109,6 +125,7 @@
               <td><%= doc.uploaded_by&.name %></td>
               <td><%= doc.created_at.strftime("%Y/%m/%d") %></td>
               <td><%= doc.signed_at&.strftime("%Y/%m/%d") %></td>
+              <td><%= doc.sent_for_signature_at&.strftime("%Y/%m/%d") %></td>
               <td>
                 <div class="level mt-0 mb-0">
                   <div class="level-left">
@@ -122,24 +139,26 @@
                       <% end %>
                     </div>
 
-                    <div class="level-item">
-                      <%= link_to edit_document_path(doc), class: "has-text-dark", title: "Редагувати", data: { turbo: false } do %>
-                        <span class="icon is-small">
-                          <i class="fas fa-edit" aria-hidden="true"></i>
-                        </span>
-                      <% end %>
-                    </div>
+                    <% if doc.status != "pending" %>
+                      <div class="level-item">
+                        <%= link_to edit_document_path(doc), class: "has-text-dark", title: "Редагувати", data: { turbo: false } do %>
+                          <span class="icon is-small">
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                          </span>
+                        <% end %>
+                      </div>
 
-                    <div class="level-item">
-                      <%= link_to confirm_destroy_document_path(doc),
-                      class: "has-text-dark", 
-                      title: "Видалити",
-                      data: { turbo_frame: "modal", turbo_prefetch: "false" } do %>
-                        <span class="icon is-small">
-                          <i class="fas fa-trash" aria-hidden="true"></i>
-                        </span>
-                      <% end %>
-                    </div>
+                      <div class="level-item">
+                        <%= link_to confirm_destroy_document_path(doc),
+                        class: "has-text-dark", 
+                        title: "Видалити",
+                        data: { turbo_frame: "modal", turbo_prefetch: "false" } do %>
+                          <span class="icon is-small">
+                            <i class="fas fa-trash" aria-hidden="true"></i>
+                          </span>
+                        <% end %>
+                      </div>
+                    <% end %>
 
                     <div class="level-item">
                       <% if doc.status == "linked" %>

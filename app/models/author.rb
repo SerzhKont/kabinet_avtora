@@ -5,6 +5,8 @@ class Author < ApplicationRecord
   has_many :documents, dependent: :destroy
   has_many :document_groups, dependent: :destroy
 
+  before_save :update_documents_code, if: :code_changed?
+
   def self.find_by_code_or_name(query)
     where("code::text ILIKE ? OR name ILIKE ?", "%#{query}%", "%#{query}%")
   end
@@ -15,5 +17,11 @@ class Author < ApplicationRecord
 
   def self.ransackable_associations(auth_object = nil)
     %w[documents]
+  end
+
+  private
+
+  def update_documents_code
+    documents.update_all(extracted_code: code)
   end
 end

@@ -1,4 +1,6 @@
 class AuthorsController < ApplicationController
+  before_action :set_author, only: [ :edit, :update ]
+
   def index
     @authors = Author.all
   end
@@ -20,7 +22,14 @@ class AuthorsController < ApplicationController
   end
 
   def edit
-    render "edit"
+  end
+
+  def update
+    if @author.update(author_params)
+      redirect_to authors_path, notice: "Автор успешно обновлен."
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def destroy
@@ -43,6 +52,10 @@ class AuthorsController < ApplicationController
   end
 
   private
+
+  def set_author
+    @author = Author.find(params[:id])
+  end
 
   def author_params
     params.require(:author).permit(:name, :email_address, :code)

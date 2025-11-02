@@ -14,8 +14,8 @@
           <%= search_form_for @q, class: "field has-addons" do |f| %>
             <p class="control has-icons-left">
               <%= f.search_field :author_name_or_extracted_code_cont,
-                                class: "input", 
-                                placeholder: "Знайти по автору або ІПН" %>
+                             class: "input",
+                             placeholder: "Знайти по автору або ІПН" %>
               <span class="icon is-small is-left">
                 <i class="fa-solid fa-magnifying-glass"></i>
               </span>
@@ -27,16 +27,16 @@
         <div class="level-item">
           <div class="buttons has-addons">
             <%= link_to "Всі",
-              filtered_documents_path(nil),
-              class: "button #{"is-link" if params[:status].blank?}" %>
+            filtered_documents_path(nil),
+            class: "button #{"is-link" if params[:author_filter].blank?}" %>
 
             <%= link_to "Є автор",
-              filtered_documents_path("linked"),
-              class: "button #{"is-success is-selected" if params[:status] == "linked"}" %>
+            filtered_documents_path("with_author"),
+            class: "button #{"is-success is-selected" if params[:author_filter] == "with_author"}" %>
 
             <%= link_to "Без автора",
-              filtered_documents_path("unlinked"),
-              class: "button #{"is-danger is-selected" if params[:status] == "unlinked"}" %>
+            filtered_documents_path("without_author"),
+            class: "button #{"is-danger is-selected" if params[:author_filter] == "without_author"}" %>
           </div>
         </div>
       </div>
@@ -47,7 +47,10 @@
             Документів на сторінці:&nbsp;
             <%= form_with url: documents_path, method: :get, local: true, data: { turbo_frame: "documents_table" } do %>
               <div class="select">
-                <%= select_tag :items, options_for_select([ 25, 50, 100, 200, 500 ], params[:items]&.to_i || 25), onchange: "this.form.submit()", class: "select" %>
+                <%= select_tag :items,
+                options_for_select([25, 50, 100, 200, 500], params[:items]&.to_i || 25),
+                onchange: "this.form.submit()",
+                class: "select" %>
               </div>
             <% end %>
           </p>
@@ -55,6 +58,6 @@
       </div>
     </nav>
 
-    <%= render partial: "table", locals: { documents: @documents, pagy: @pagy, q: @q} %>
+    <%= render partial: "table", locals: { documents: @documents, pagy: @pagy, q: @q } %>
   </div>
 </div>

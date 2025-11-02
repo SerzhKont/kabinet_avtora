@@ -16,7 +16,7 @@ module DocumentsHelper
     end
   end
 
-  def filtered_documents_path(status = nil)
+  def filtered_documents_path(author_filter = nil)
     query_params = {}
 
     # Безопасно обрабатываем параметры поиска
@@ -30,8 +30,8 @@ module DocumentsHelper
     query_params[:items] = params[:items] if params[:items].present?
     query_params[:page] = params[:page] if params[:page].present?
 
-    # Добавляем/изменяем статус
-    query_params[:status] = status
+    # Добавляем/изменяем фильтр по автору
+    query_params[:author_filter] = author_filter
 
     documents_path(query_params)
   end

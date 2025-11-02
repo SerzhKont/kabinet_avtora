@@ -30,7 +30,11 @@ class DocumentGroupMailerService
           AuthorMailer.send_document_group_link(group).deliver_now
         end
       end
-      documents_to_group.update_all(status: NEW_STATUS_AFTER_SEND)
+
+      # Обновляем статус документов на "pending" и устанавливаем дату отправки
+      documents_to_group.update_all(status: NEW_STATUS_AFTER_SEND, sent_for_signature_at: Time.current)
+      Rails.logger.info "Обновлен статус #{documents_to_group.count} документов на '#{NEW_STATUS_AFTER_SEND}'"
+      Rails.logger.info "Установлена дата отправки на подпись для #{documents_to_group.count} документов"
     end
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Ошибка при отправке группы документов: #{e.message}"

@@ -30,7 +30,7 @@ class Document < ApplicationRecord
 
   # Allow searching/sorting on these attributes
   def self.ransackable_attributes(auth_object = nil)
-    %w[title content created_at status extracted_code signed_at]
+    %w[title content created_at status extracted_code signed_at sent_for_signature_at]
   end
 
   # Allow searching/sorting on associations (if any)

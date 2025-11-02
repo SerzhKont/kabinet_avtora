@@ -16,7 +16,14 @@ class DocumentsController < ApplicationController
 
   def index
     @q = Document.ransack(params[:q])
-    scope = params[:status].present? ? Document.where(status: params[:status]) : Document.all
+    scope = case params[:author_filter]
+    when "with_author"
+              Document.where.not(author_id: nil)
+    when "without_author"
+              Document.where(author_id: nil)
+    else
+              Document.all
+    end
     items_per_page = params[:items]&.to_i || 25
     items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
     @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
@@ -80,7 +87,14 @@ class DocumentsController < ApplicationController
     document.destroy
 
     @q = Document.ransack(params[:q])
-    scope = params[:status].present? ? Document.where(status: params[:status]) : Document.all
+    scope = case params[:author_filter]
+    when "with_author"
+              Document.where.not(author_id: nil)
+    when "without_author"
+              Document.where(author_id: nil)
+    else
+              Document.all
+    end
     items_per_page = params[:items]&.to_i || 25
     items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
     @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
@@ -99,10 +113,27 @@ class DocumentsController < ApplicationController
 
   def send_single
     @document = Document.find(params[:id])
-    DocumentGroupMailerService.call([ @document.id ])
+
+    if @document.status == "pending"
+      redirect_to documents_path, alert: "Документ уже находится в процессе подписания (статус: pending)"
+      return
+    elsif @document.status == "linked" && @document.author_id.present?
+      DocumentGroupMailerService.call([ @document.id ])
+      @document.update(status: "pending", sent_for_signature_at: Time.current)
+    else
+      redirect_to documents_path, alert: "Документ не может быть отправлен на подпись"
+      return
+    end
 
     @q = Document.ransack(params[:q])
-    scope = params[:status].present? ? Document.where(status: params[:status]) : Document.all
+    scope = case params[:author_filter]
+    when "with_author"
+              Document.where.not(author_id: nil)
+    when "without_author"
+              Document.where(author_id: nil)
+    else
+              Document.all
+    end
     items_per_page = params[:items]&.to_i || 25
     items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
     @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
@@ -115,7 +146,7 @@ class DocumentsController < ApplicationController
           locals: { documents: @documents, pagy: @pagy }
         )
       end
-      format.html { redirect_to documents_path, notice: "Документи успішно відправлено на підпис!" }
+      format.html { redirect_to documents_path, notice: "Документ успішно відправлено на підпис!" }
     end
 
   rescue ActiveRecord::RecordNotFound
@@ -133,38 +164,43 @@ class DocumentsController < ApplicationController
 
     case action
     when "delete"
-        bulk_delete(document_ids)
+        @result = bulk_delete(document_ids)
     when "send"
-        bulk_send(document_ids)
+        @result = bulk_send(document_ids)
     else
         redirect_to documents_path, alert: "Выберите действие"
+        return
     end
 
     # Повторно загружаем документы для обновления таблицы
     @q = Document.ransack(params[:q])
-    scope = params[:status].present? ? Document.where(status: params[:status]) : Document.all
+    scope = case params[:author_filter]
+    when "with_author"
+              Document.where.not(author_id: nil)
+    when "without_author"
+              Document.where(author_id: nil)
+    else
+              Document.all
+    end
     items_per_page = params[:items]&.to_i || 25
     items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
     @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
 
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          "documents_table",
-          partial: "documents/table",
-          locals: { documents: @documents, pagy: @pagy }
-        )
+        render turbo_stream: [
+          turbo_stream.remove("bulk_action_modal"),
+          turbo_stream.replace(
+            "documents_table",
+            partial: "documents/table",
+            locals: { documents: @documents, pagy: @pagy }
+          ),
+          turbo_stream.replace("notifications", partial: "layouts/notifications", locals: {
+            flash: @result[:success] ? { notice: @result[:message] } : { alert: @result[:message] }
+          })
+        ]
       end
-      format.html { redirect_to documents_path, notice:
-        case action
-        when "delete"
-          "Документи успішно видалено!"
-        when "send"
-          "Документи успішно відправлено на підпис!"
-        else
-           "Документи оброблено"
-        end
-     }
+      format.html { redirect_to documents_path, notice: @result[:success] ? @result[:message] : nil, alert: @result[:success] ? nil : @result[:message] }
     end
   end
 
@@ -192,18 +228,23 @@ class DocumentsController < ApplicationController
 
   def bulk_delete(document_ids)
     count = Document.where(id: document_ids).destroy_all.count
-    flash.now[:notice] = "Удалено документов: #{count}"
+    { success: true, message: "Удалено документов: #{count}" }
   end
 
   def bulk_send(document_ids)
     document_ids = params[:document_ids]
 
     if document_ids.blank?
-      redirect_to documents_path, alert: "Вы не выбрали ни одного документа."
-      return
+      return { success: false, message: "Вы не выбрали ни одного документа." }
+    end
+
+    # Проверяем, есть ли документы со статусом pending
+    pending_documents = Document.where(id: document_ids, status: "pending")
+    if pending_documents.any?
+      return { success: false, message: "Некоторые документы уже находятся в процессе подписания" }
     end
 
     DocumentGroupMailerService.call(document_ids)
-    redirect_to documents_path, notice: "Письма авторам поставлены в очередь."
+    { success: true, message: "Документы отправлены на подпись" }
   end
 end
