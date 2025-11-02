@@ -101,7 +101,22 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
     DocumentGroupMailerService.call([ @document.id ])
 
-    redirect_to documents_path, notice: "Документ '#{@document.title}' отправлен автору."
+    @q = Document.ransack(params[:q])
+    scope = params[:status].present? ? Document.where(status: params[:status]) : Document.all
+    items_per_page = params[:items]&.to_i || 25
+    items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
+    @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          "documents_table",
+          partial: "documents/table",
+          locals: { documents: @documents, pagy: @pagy }
+        )
+      end
+      format.html { redirect_to documents_path, notice: "Документи успішно відправлено на підпис!" }
+    end
 
   rescue ActiveRecord::RecordNotFound
     redirect_to documents_path, alert: "Документ не найден."
@@ -132,17 +147,24 @@ class DocumentsController < ApplicationController
     items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
     @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
 
-    # Рендерим index для обновления turbo-frame
     respond_to do |format|
       format.turbo_stream do
-        # Заменяем всю таблицу новым partial
         render turbo_stream: turbo_stream.replace(
           "documents_table",
           partial: "documents/table",
           locals: { documents: @documents, pagy: @pagy }
         )
       end
-      format.html { redirect_to documents_path, notice: "Документ успішно видалено!" }
+      format.html { redirect_to documents_path, notice:
+        case action
+        when "delete"
+          "Документи успішно видалено!"
+        when "send"
+          "Документи успішно відправлено на підпис!"
+        else
+           "Документи оброблено"
+        end
+     }
     end
   end
 
