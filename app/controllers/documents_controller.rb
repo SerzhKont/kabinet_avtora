@@ -1,6 +1,4 @@
 class DocumentsController < ApplicationController
-  include Pagy::Backend
-
   before_action :authenticate_user!, only: [ :author_index ]
   before_action :ensure_manager, only: [ :edit, :update, :destroy, :bulk_action, :send_single ]
   before_action :set_document, only: [ :show, :edit, :update, :confirm_destroy, :confirm_send_for_signature ]
@@ -26,7 +24,7 @@ class DocumentsController < ApplicationController
     end
     items_per_page = params[:items]&.to_i || 25
     items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
-    @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
+    @pagy, @documents = pagy(:offset, @q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
   end
 
   def show

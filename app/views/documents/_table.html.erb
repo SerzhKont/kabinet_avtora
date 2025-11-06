@@ -198,8 +198,7 @@
   <% if documents.empty? %>
     <p>Документи не знайдено.</p>
   <% else %>
-    <% if pagy && pagy.pages > 1 %>
-      <%== pagy_nav(pagy) %>
-    <% end %>
+    <%== @pagy.series_nav(:bulma) %>
+    <%== @pagy.info_tag %>
   <% end %>
 <% end %>

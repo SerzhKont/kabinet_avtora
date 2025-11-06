@@ -3,7 +3,9 @@
     <div class="level">
       <div class="level-left">
         <h1 class="title is-4">
-          <%= link_to "← Назад до списку", document_group_path(@group.token), class: "button is-light is-small mr-3" %>
+          <%= link_to "← Назад до списку",
+          document_group_path(@group.token),
+          class: "button is-light is-small mr-3" %>
           <%= @document.title %>
         </h1>
       </div>
@@ -20,8 +22,11 @@
     <div class="box">
       <div class="content">
         <p class="has-text-grey">
-          <strong>Автор:</strong> <%= @author.name %> | 
-          <strong>Додано:</strong> <%= @document.created_at.strftime("%Y/%m/%d") %>
+          <strong>Автор:</strong>
+          <%= @author.name %>
+          |
+          <strong>Додано:</strong>
+          <%= @document.created_at.strftime("%Y/%m/%d") %>
         </p>
       </div>
     </div>
@@ -30,30 +35,44 @@
       <% if @document.file.attached? %>
         <% if @document.file.content_type.start_with?('image/') %>
           <div class="has-text-centered">
-            <%= image_tag url_for(@document.file), class: "image", style: "max-width: 100%; max-height: 80vh;" %>
+            <%= image_tag url_for(@document.file),
+            class: "image",
+            style: "max-width: 100%; max-height: 80vh;" %>
           </div>
         <% elsif @document.file.content_type == 'application/pdf' %>
-          <iframe 
-            src="<%= url_for(@document.file) %>" 
-            width="100%" 
-            height="800px" 
+          <iframe
+            title="Перегляд документа"
+            src="<%= url_for(@document.file) %>"
+            width="100%"
+            height="800px"
             frameborder="0"
             style="border: 1px solid #ddd; border-radius: 4px;"
           >
-            Ваш браузер не підтримує перегляд PDF. 
-            <%= link_to "Завантажте файл", url_for(@document.file), download: @document.file.filename %>.
+            Ваш браузер не підтримує перегляд PDF.
+            <%= link_to "Завантажте файл",
+            url_for(@document.file),
+            download: @document.file.filename %>.
           </iframe>
         <% elsif @document.file.content_type.start_with?('text/') %>
           <div class="content">
-            <pre style="white-space: pre-wrap; background: #f5f5f5; padding: 1rem; border-radius: 4px;">
-              <%= @document.file.download.force_encoding('UTF-8') rescue "Не вдалося прочитати файл" %>
+            <pre
+              style="white-space: pre-wrap; background: #f5f5f5; padding: 1rem; border-radius: 4px;"
+            >
+              <%= begin
+                @document.file.download.force_encoding("UTF-8")
+              rescue StandardError
+                "Не вдалося прочитати файл"
+              end %>
             </pre>
           </div>
         <% else %>
           <div class="notification is-warning">
             <p>Цей тип файлу не підтримує перегляд у браузері.</p>
             <p>
-              <%= link_to "Завантажити файл", url_for(@document.file), download: @document.file.filename, class: "button is-primary" %>
+              <%= link_to "Завантажити файл",
+              url_for(@document.file),
+              download: @document.file.filename,
+              class: "button is-primary" %>
             </p>
           </div>
         <% end %>
@@ -65,3 +84,4 @@
     </div>
   </div>
 </section>
+

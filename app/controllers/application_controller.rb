@@ -1,6 +1,10 @@
 class ApplicationController < ActionController::Base
   include Authentication
+  include Pagy::Method
+
+  before_action { Pagy::I18n.locale = "uk" }
   before_action :set_paper_trail_whodunnit
+
   skip_before_action :require_authentication, only: [ :dismiss_notification ]
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern

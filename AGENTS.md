@@ -3,6 +3,7 @@
 This document outlines the technical conventions and commands for automated agents operating within this Ruby on Rails project.
 
 Communication language: Russian
+CSS Framework: Bulma, https://bulma.io/
 
 ## 1. Commands
 
