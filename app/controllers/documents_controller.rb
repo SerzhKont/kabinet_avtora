@@ -24,7 +24,7 @@ class DocumentsController < ApplicationController
     end
     items_per_page = params[:items]&.to_i || 25
     items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
-    @pagy, @documents = pagy(:offset, @q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
+    @pagy, @documents = pagy(:offset, @q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page, path: documents_path)
   end
 
   def show
@@ -95,15 +95,17 @@ class DocumentsController < ApplicationController
     end
     items_per_page = params[:items]&.to_i || 25
     items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
-    @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
+    @pagy, @documents = pagy(:offset, @q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page, path: documents_path)
 
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          "documents_table",
-          partial: "documents/table",
-          locals: { documents: @documents, pagy: @pagy, q: @q }
-        )
+        render turbo_stream: [
+          turbo_stream.replace(
+            "documents_table",
+            partial: "documents/table",
+            locals: { documents: @documents, pagy: @pagy, q: @q }
+          )
+        ]
       end
       format.html { redirect_to documents_path, notice: "Документ успішно видалено!" }
     end
@@ -134,15 +136,18 @@ class DocumentsController < ApplicationController
     end
     items_per_page = params[:items]&.to_i || 25
     items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
-    @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
+    @pagy, @documents = pagy(:offset, @q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page, path: documents_path)
 
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          "documents_table",
-          partial: "documents/table",
-          locals: { documents: @documents, pagy: @pagy }
-        )
+        render turbo_stream: [
+          turbo_stream.replace(
+            "documents_table",
+            partial: "documents/table",
+            locals: { documents: @documents, pagy: @pagy }
+          ),
+          turbo_stream.action(:visit, documents_path)
+        ]
       end
       format.html { redirect_to documents_path, notice: "Документ успішно відправлено на підпис!" }
     end
@@ -182,7 +187,7 @@ class DocumentsController < ApplicationController
     end
     items_per_page = params[:items]&.to_i || 25
     items_per_page = [ 25, 50, 100, 200, 500 ].include?(items_per_page) ? items_per_page : 25
-    @pagy, @documents = pagy(@q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page)
+    @pagy, @documents = pagy(:offset, @q.result.merge(scope).includes(:author, :uploaded_by), limit: items_per_page, path: documents_path)
 
     respond_to do |format|
       format.turbo_stream do
@@ -233,16 +238,15 @@ class DocumentsController < ApplicationController
     document_ids = params[:document_ids]
 
     if document_ids.blank?
-      return { success: false, message: "Вы не выбрали ни одного документа." }
+      return { success: false, message: "Ви не вибрале жодного документа." }
     end
 
-    # Проверяем, есть ли документы со статусом pending
-    pending_documents = Document.where(id: document_ids, status: "pending")
-    if pending_documents.any?
-      return { success: false, message: "Некоторые документы уже находятся в процессе подписания" }
+    invalid_documents = Document.where(id: document_ids, status: [ "pending", "unlinked", "signed" ])
+    if invalid_documents.any?
+      return { success: false, message: "Обрані документи не можуть бути відправлені на підпис" }
     end
 
     DocumentGroupMailerService.call(document_ids)
-    { success: true, message: "Документы отправлены на подпись" }
+    { success: true, message: "Документи відправлені на підпис" }
   end
 end

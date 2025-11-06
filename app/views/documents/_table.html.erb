@@ -194,11 +194,10 @@
       </table>
     <% end %>
   </div>
-
   <% if documents.empty? %>
     <p>Документи не знайдено.</p>
   <% else %>
-    <%== @pagy.series_nav(:bulma) %>
-    <%== @pagy.info_tag %>
+    <%== pagy.series_nav(:bulma) %>
+    <%== pagy.info_tag %>
   <% end %>
 <% end %>

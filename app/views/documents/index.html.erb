@@ -32,11 +32,13 @@
 
             <%= link_to "Є автор",
             filtered_documents_path("with_author"),
-            class: "button #{"is-success is-selected" if params[:author_filter] == "with_author"}" %>
+            class:
+              "button #{"is-success is-selected" if params[:author_filter] == "with_author"}" %>
 
             <%= link_to "Без автора",
             filtered_documents_path("without_author"),
-            class: "button #{"is-danger is-selected" if params[:author_filter] == "without_author"}" %>
+            class:
+              "button #{"is-danger is-selected" if params[:author_filter] == "without_author"}" %>
           </div>
         </div>
       </div>
