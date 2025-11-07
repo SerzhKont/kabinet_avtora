@@ -20,22 +20,35 @@ test:
   <<: *default
   database: storage/test.sqlite3
 
+#
+# Определяем Якорь (Anchor) ТОЛЬКО для настроек production
+#
+production_db_config: &production_db_config
+  url: <%= ENV['DATABASE_URL'] %>
+  adapter: postgresql
+  encoding: unicode
+  host: <%= ENV["DATABASE_HOST"] %>
+  database: <%= ENV["DATABASE_NAME"] %>
+  username: <%= ENV["DATABASE_USER"] %>
+  password: <%= ENV["DATABASE_PASSWORD"] %>
+  port: <%= ENV["DATABASE_PORT"] || 5432 %>
+  sslmode: "require"
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 25 } %>
+  timeout: 5000
+  reconnect: true
+  prepared_statements: false
 
 # Store production database in the storage/ directory, which by default
 # is mounted as a persistent Docker volume in config/deploy.yml.
 production:
   primary:
-    <<: *default
-    database: storage/production.sqlite3
+    <<: *production_db_config
+
   cache:
-    <<: *default
-    database: storage/production_cache.sqlite3
-    migrations_paths: db/cache_migrate
+    <<: *production_db_config
+
   queue:
-    <<: *default
-    database: storage/production_queue.sqlite3
-    migrations_paths: db/queue_migrate
+    <<: *production_db_config
+
   cable:
-    <<: *default
-    database: storage/production_cable.sqlite3
-    migrations_paths: db/cable_migrate
+    <<: *production_db_config
