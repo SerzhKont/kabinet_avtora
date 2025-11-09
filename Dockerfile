@@ -57,6 +57,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends openssh-server \
     && echo "root:Docker!" | chpasswd \
 RUN mkdir /run/sshd
+RUN chmod +x /rails/bin/azure-entrypoint
 COPY sshd_config /etc/ssh/
 
 # Copy built artifacts: gems, application
@@ -70,7 +71,7 @@ RUN groupadd --system --gid 1000 rails && \
 # USER 1000:1000
 
 # Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+ENTRYPOINT ["/rails/bin/azure-entrypoint"]
 
 # Start server via Thruster by default, this can be overwritten at runtime
 EXPOSE 80 2222

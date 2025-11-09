@@ -6,15 +6,9 @@ if [ -z "${LD_PRELOAD+x}" ]; then
     export LD_PRELOAD
 fi
 
-# Этот скрипт теперь запускается от ROOT
-
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  /usr/sbin/sshd
-
-  su rails -c "./bin/rails db:prepare"
+  ./bin/rails db:prepare
 fi
 
-echo "Executing CMD ($*) as user 'rails'..."
-
-exec su rails -c "$*"
+exec "${@}"
