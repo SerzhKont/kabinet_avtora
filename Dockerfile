@@ -42,6 +42,7 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
+RUN chmod +x /rails/bin/azure-entrypoint
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
@@ -57,7 +58,6 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends openssh-server \
     && echo "root:Docker!" | chpasswd \
 RUN mkdir /run/sshd
-RUN chmod +x /rails/bin/azure-entrypoint
 COPY sshd_config /etc/ssh/
 
 # Copy built artifacts: gems, application
