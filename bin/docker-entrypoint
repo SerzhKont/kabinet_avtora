@@ -10,18 +10,11 @@ fi
 
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  # 1. Задачи от ROOT
-  echo "Running ROOT tasks: Starting SSHD..."
-  mkdir -p /var/run/sshd
-  /usr/sbin/sshd -D &
-  
-  # 2. Задачи от пользователя 'rails'
-  echo "Running APP tasks: Preparing database as user 'rails'..."
-  
+  service ssh start
+
   su rails -c "./bin/rails db:prepare"
 fi
 
-# 3. Запускаем основной CMD ($@) от имени пользователя 'rails'
 echo "Executing CMD ($*) as user 'rails'..."
 
 exec su rails -c "$*"
