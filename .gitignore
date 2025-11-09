@@ -37,4 +37,5 @@
 !/app/assets/builds/.keep
 
 .gem_rbs_collection
+.rbs_collection.lock.yaml
 .env

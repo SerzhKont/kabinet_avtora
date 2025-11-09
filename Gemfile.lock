@@ -89,14 +89,8 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     amazing_print (2.0.0)
     ast (2.4.3)
-    azure-storage-blob (2.0.3)
-      azure-storage-common (~> 2.0)
-      nokogiri (~> 1, >= 1.10.8)
-    azure-storage-common (2.0.4)
-      faraday (~> 1.0)
-      faraday_middleware (~> 1.0, >= 1.0.0.rc1)
-      net-http-persistent (~> 4.0)
-      nokogiri (~> 1, >= 1.10.8)
+    azure-blob (0.5.9.1)
+      rexml
     azure_communication_email (0.2.0)
       actionmailer (>= 7.0)
       activesupport (>= 7.0)
@@ -172,8 +166,6 @@ GEM
     faraday-patron (1.0.0)
     faraday-rack (1.0.0)
     faraday-retry (1.0.3)
-    faraday_middleware (1.2.1)
-      faraday (~> 1.0)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
     ffi (1.17.2-arm-linux-gnu)
@@ -264,8 +256,6 @@ GEM
     minitest (5.26.0)
     msgpack (1.8.0)
     multipart-post (2.4.1)
-    net-http-persistent (4.0.6)
-      connection_pool (~> 2.2, >= 2.2.4)
     net-imap (0.5.12)
       date
       net-protocol
@@ -541,7 +531,7 @@ PLATFORMS
 
 DEPENDENCIES
   amazing_print
-  azure-storage-blob (~> 2.0, >= 2.0.3)
+  azure-blob (~> 0.5.9.1)
   azure_communication_email
   bcrypt (~> 3.1.7)
   bootsnap

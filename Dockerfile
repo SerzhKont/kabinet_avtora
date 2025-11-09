@@ -39,6 +39,10 @@ RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
+# Start and enable SSH
+RUN apt-get update && apt-get install -y openssh-server
+COPY sshd_config /etc/ssh/
+
 # Copy application code
 COPY . .
 
@@ -68,5 +72,5 @@ USER 1000:1000
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # Start server via Thruster by default, this can be overwritten at runtime
-EXPOSE 80
+EXPOSE 80 2222
 CMD ["./bin/thrust", "./bin/rails", "server"]
