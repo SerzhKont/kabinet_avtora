@@ -10,8 +10,7 @@ fi
 
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  mkdir -p /var/run/sshd
-  /usr/sbin/sshd -D &
+  /usr/sbin/sshd
 
   su rails -c "./bin/rails db:prepare"
 fi
