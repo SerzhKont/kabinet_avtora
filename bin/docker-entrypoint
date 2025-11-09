@@ -6,11 +6,22 @@ if [ -z "${LD_PRELOAD+x}" ]; then
     export LD_PRELOAD
 fi
 
+# Этот скрипт теперь запускается от ROOT
+
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+  # 1. Задачи от ROOT
+  echo "Running ROOT tasks: Starting SSHD..."
   mkdir -p /var/run/sshd
   /usr/sbin/sshd -D &
-  ./bin/rails db:prepare
+  
+  # 2. Задачи от пользователя 'rails'
+  echo "Running APP tasks: Preparing database as user 'rails'..."
+  
+  su rails -c "./bin/rails db:prepare"
 fi
 
-exec "${@}"
+# 3. Запускаем основной CMD ($@) от имени пользователя 'rails'
+echo "Executing CMD ($*) as user 'rails'..."
+
+exec su rails -c "$*"
