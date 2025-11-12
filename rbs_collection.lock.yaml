@@ -289,6 +289,10 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: net-http
+  version: '0'
+  source:
+    type: stdlib
 - name: net-protocol
   version: '0'
   source:
