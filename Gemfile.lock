@@ -271,7 +271,7 @@ GEM
       racc (~> 1.4)
     observer (0.1.2)
     ostruct (0.6.3)
-    pagy (43.0.7)
+    pagy (43.1.0)
       json
       yaml
     paper_trail (17.0.0)
@@ -534,7 +534,7 @@ DEPENDENCIES
   jbuilder
   kamal
   letter_opener (~> 1.4, >= 1.4.1)
-  pagy (~> 43.0)
+  pagy (~> 43.1)
   paper_trail
   pg (~> 1.6, >= 1.6.2)
   propshaft
