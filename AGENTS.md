@@ -2,8 +2,19 @@
 
 This document outlines the technical conventions and commands for automated agents operating within this Ruby on Rails project.
 
-Communication language: Russian
-CSS Framework: Bulma, https://bulma.io/
+## Kabinet avtora project
+
+This is Ruby on Rails 8 project.
+For frontend project uses Turbo: frames, steams and stimulus.
+Development db is SQLite.
+Production db is PostgreSQL.
+Use russian language for answers.
+The project uses CSS Framework Bulma.
+The project uses Bundler for package management.
+For communicating with APIs project uses Faraday.
+
+Project is published in Azure App Service using Podman container.
+For sending emails from application is used Azure Email Communication service.
 
 ## 1. Commands
 
