@@ -89,7 +89,7 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     amazing_print (2.0.0)
     ast (2.4.3)
-    azure-blob (0.5.9.1)
+    azure-blob (0.6.0)
       rexml
     azure_communication_email (0.2.0)
       actionmailer (>= 7.0)
@@ -516,7 +516,7 @@ PLATFORMS
 
 DEPENDENCIES
   amazing_print
-  azure-blob (~> 0.5.9.1)
+  azure-blob (~> 0.6.0)
   azure_communication_email
   bcrypt (~> 3.1.7)
   bootsnap

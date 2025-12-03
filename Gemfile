@@ -77,6 +77,6 @@ gem "dotenv-rails", "~> 3.1", ">= 3.1.8", groups: [ :development, :test ]
 gem "pagy", "~> 43.1"
 gem "ransack", github: "activerecord-hackery/ransack", branch: "main"
 gem "azure_communication_email"
-gem "azure-blob", "~> 0.5.9.1"
+gem "azure-blob", "~> 0.6.0"
 
 gem "erb-formatter", "~> 0.7.3"
