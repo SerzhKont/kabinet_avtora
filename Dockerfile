@@ -23,6 +23,9 @@ RUN apt-get update -qq && \
     && apt-get install -y --no-install-recommends gosu \
     && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
+RUN mkdir /run/sshd
+COPY sshd_config /etc/ssh/
+
 # Set production environment
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
