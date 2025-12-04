@@ -17,13 +17,13 @@ WORKDIR /rails
 # Install base packages
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client && \
-    && apt-get install -y --no-install-recommends dialog \
+    apt-get install -y --no-install-recommends dialog \
     && apt-get install -y --no-install-recommends openssh-server \
     && echo "root:Docker!" | chpasswd \
     && apt-get install -y --no-install-recommends gosu \
     && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-RUN mkdir /run/sshd
+RUN mkdir -p /run/sshd
 COPY sshd_config /etc/ssh/
 
 # Set production environment
@@ -66,7 +66,7 @@ COPY --from=build /rails /rails
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
     chown -R rails:rails db log storage tmp
-USER 1000:1000
+# USER 1000:1000
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
