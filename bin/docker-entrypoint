@@ -1,14 +1,39 @@
 #!/bin/bash -e
 
-# Enable jemalloc for reduced memory usage and latency.
+# === БЛОК 1: ROOT (Запуск системных служб) ===
+# Проверяем, являемся ли мы root (ID пользователя 0)
+if [ "$(id -u)" = '0' ]; then
+    echo "Running as root. Setting up system services..."
+
+    # 1. Запускаем SSH (требование Azure)
+    mkdir -p /var/run/sshd
+    /usr/sbin/sshd -D &
+    echo "SSH server started."
+
+    # 2. ПЕРЕЗАПУСК КАК ПОЛЬЗОВАТЕЛЬ 'rails'
+    # Мы используем gosu, чтобы понизить права до пользователя 'rails'
+    # и запустить ЭТОТ ЖЕ скрипт ("$0") с теми же аргументами ("$@")
+    echo "Dropping privileges to user 'rails' and restarting entrypoint..."
+    exec gosu rails "$0" "$@"
+fi
+
+# =========================================================
+# === БЛОК 2: USER 'rails' (Логика приложения) ===
+# Все, что ниже, выполняется уже от имени пользователя rails
+# =========================================================
+
+# Настройка jemalloc
 if [ -z "${LD_PRELOAD+x}" ]; then
     LD_PRELOAD=$(find /usr/lib -name libjemalloc.so.2 -print -quit)
     export LD_PRELOAD
 fi
 
-# If running the rails server then create or migrate existing database
+# Подготовка БД (только если запускаем сервер)
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+  echo "Running db:prepare..."
   ./bin/rails db:prepare
 fi
 
+# Запуск основной команды (thrust/rails)
+echo "Starting main process: $@"
 exec "${@}"
