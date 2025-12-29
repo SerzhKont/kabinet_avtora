@@ -68,7 +68,7 @@ gem "rubocop", group: :development
 gem "solargraph-rails", group: :development
 gem "herb", group: :development
 gem "dartsass-rails", "~> 0.5.1"
-gem "bulma-rails", "~> 1.0.0"
+gem "bulma-rails", "~> 1.0.4"
 gem "amazing_print"
 gem "paper_trail"
 gem "faraday"
