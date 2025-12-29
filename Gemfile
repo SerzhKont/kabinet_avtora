@@ -72,7 +72,7 @@ gem "bulma-rails", "~> 1.0.0"
 gem "amazing_print"
 gem "paper_trail"
 gem "faraday"
-gem "pg", "~> 1.6", ">= 1.6.2"
+gem "pg", "~> 1.6"
 gem "dotenv-rails", "~> 3.2", groups: [ :development, :test ]
 gem "pagy", "~> 43.2"
 gem "ransack", github: "activerecord-hackery/ransack", branch: "main"
